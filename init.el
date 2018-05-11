@@ -14,7 +14,6 @@
 
 (setq use-package-always-ensure t)
 (use-package base16-theme)
-;;(use-package solarized-theme)
 (load-theme 'base16-default-dark t) ;; dark theme
 ;;(load-theme 'base16-default-light t) ;;light theme
 
@@ -150,10 +149,10 @@
   (global-set-key (kbd "C-;") 'counsel-imenu)
   (global-set-key "\C-s" 'swiper)
   (global-set-key (kbd "s-g") 'counsel-git-grep)
-  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
@@ -173,7 +172,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (merlin tuareg which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+    (which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
