@@ -117,6 +117,12 @@
 
 ;; PACKAGES
 
+(use-package exec-path-from-shell
+    :config
+    (exec-path-from-shell-initialize))
+
+(use-package smex)
+
 (use-package ido-completing-read+
   :config
   (ido-ubiquitous-mode 1))
@@ -162,6 +168,44 @@
 (setq org-startup-indented t)
 (setq org-hide-leading-stars t)
 
+(use-package elpy
+  :config
+  (elpy-enable)
+  (setq elpy-rpc-backend "jedi")
+  (setq elpy-rpc-python-command "python3"))
+
+(use-package company
+  :config
+  (add-hook 'prog-mode-hook 'company-mode)
+  (setq company-backends
+        '((company-files          ; files & directory
+           company-keywords       ; keywords
+           company-capf
+           company-dabbrev-code
+           company-abbrev company-dabbrev
+           )))
+  (setq company-idle-delay 0.2)
+  (with-eval-after-load 'company
+    (define-key company-active-map (kbd "M-n") nil)
+    (define-key company-active-map (kbd "M-p") nil)
+    (define-key company-active-map (kbd "C-n") #'company-select-next)
+    (define-key company-active-map (kbd "C-p") #'company-select-previous)))
+
+(use-package flycheck
+  :init
+  (setq flycheck-enabled-mode-hooks '(
+                                      c-mode-hook
+                                      c++-mode-hook
+                                      python-mode-hook
+                                      emacs-lisp-mode-hook
+                                      ))
+  :config
+  (mapc (lambda (hook)
+          (add-hook hook 'flycheck-mode))
+        flycheck-enabled-mode-hooks)
+  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++14"))))
+
+
 ;; KEYBINDINGS
 (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
 
@@ -170,9 +214,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(elpy-modules
+   (quote
+    (elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
+ '(flycheck-python-flake8-executable "/usr/local/bin/flake8")
  '(package-selected-packages
    (quote
-    (which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+    (smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
