@@ -1,9 +1,9 @@
 ;; Set up package management
 (require 'package)
 (add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
- 	     '("marmalade" . "http://marmalade-repo.org/packages/") t)
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
 
@@ -23,7 +23,7 @@
 ;; Ask "y" or "n" instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-default-font "Courier 14" nil t)
+(set-default-font "Courier 15" nil t)
 
 ;; Change startup window size
 (add-to-list 'default-frame-alist '(width . 100)) ; characters
@@ -43,6 +43,7 @@
 
 ;; Enable line numbers and col numbers
 (global-linum-mode +1)
+(setq linum-format "%3d \u2502")
 (setq column-number-mode t)
 
 ;; Isearch convenience, space matches anything (non-greedy)
@@ -118,8 +119,8 @@
 ;; PACKAGES
 
 (use-package exec-path-from-shell
-    :config
-    (exec-path-from-shell-initialize))
+  :config
+  (exec-path-from-shell-initialize))
 
 (use-package smex)
 
@@ -154,11 +155,8 @@
   (ivy-mode 1)
   (global-set-key (kbd "C-;") 'counsel-imenu)
   (global-set-key "\C-s" 'swiper)
-  (global-set-key (kbd "s-g") 'counsel-git-grep)
-  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "s-g") 'counsel-ag)
+  (global-set-key (kbd "s-o") 'counsel-git)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
@@ -184,7 +182,8 @@
            company-dabbrev-code
            company-abbrev company-dabbrev
            )))
-  (setq company-idle-delay 0.2)
+  (setq company-idle-delay 0.3)
+  (setq company-minimum-prefix-length 1)
   (with-eval-after-load 'company
     (define-key company-active-map (kbd "M-n") nil)
     (define-key company-active-map (kbd "M-p") nil)
@@ -197,13 +196,29 @@
                                       c-mode-hook
                                       c++-mode-hook
                                       python-mode-hook
-                                      emacs-lisp-mode-hook
+                                      rust-mode-hook
                                       ))
   :config
   (mapc (lambda (hook)
           (add-hook hook 'flycheck-mode))
         flycheck-enabled-mode-hooks)
   (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++14"))))
+
+(use-package rust-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+  (setq rust-format-on-save t))
+
+(use-package racer
+  :config
+  (add-hook 'rust-mode-hook #'racer-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook #'company-mode))
+
+(use-package flycheck-rust
+  :config
+  (with-eval-after-load 'rust-mode
+    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 
 
 ;; KEYBINDINGS
@@ -220,7 +235,7 @@
  '(flycheck-python-flake8-executable "/usr/local/bin/flake8")
  '(package-selected-packages
    (quote
-    (smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+    (racer flycheck-rust rust-mode smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
