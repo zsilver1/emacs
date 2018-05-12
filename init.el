@@ -153,6 +153,7 @@
 (use-package counsel
   :config
   (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
   (global-set-key (kbd "C-;") 'counsel-imenu)
   (global-set-key "\C-s" 'swiper)
   (global-set-key (kbd "s-g") 'counsel-ag)
@@ -171,6 +172,10 @@
   (elpy-enable)
   (setq elpy-rpc-backend "jedi")
   (setq elpy-rpc-python-command "python3"))
+
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
 
 (use-package company
   :config
@@ -235,10 +240,12 @@
  '(flycheck-python-flake8-executable "/usr/local/bin/flake8")
  '(package-selected-packages
    (quote
-    (racer flycheck-rust rust-mode smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+    (undo-tree racer flycheck-rust rust-mode smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(flycheck-error ((t (:underline "#ab4642"))))
+ '(flycheck-info ((t (:underline "#a1b56c"))))
+ '(flycheck-warning ((t (:underline "#dc9656")))))
