@@ -162,11 +162,6 @@
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
 
-;; Make org mode source code syntax highlighted
-(setq org-src-fontify-natively t)
-(setq org-startup-indented t)
-(setq org-hide-leading-stars t)
-
 (use-package elpy
   :config
   (elpy-enable)
@@ -187,7 +182,7 @@
            company-dabbrev-code
            company-abbrev company-dabbrev
            )))
-  (setq company-idle-delay 0.3)
+  (setq company-idle-delay 1)
   (setq company-minimum-prefix-length 1)
   (with-eval-after-load 'company
     (define-key company-active-map (kbd "M-n") nil)
@@ -225,6 +220,11 @@
   (with-eval-after-load 'rust-mode
     (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 
+;; ORG MODE
+;; Make org mode source code syntax highlighted
+(setq org-src-fontify-natively t)
+(setq org-startup-indented t)
+(setq org-hide-leading-stars t)
 
 ;; KEYBINDINGS
 (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
