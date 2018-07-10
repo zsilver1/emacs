@@ -18,7 +18,10 @@
 ;;(load-theme 'base16-default-light t) ;;light theme
 
 ;; disable the title bar text
-(setq frame-title-format "")
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
+(setq ns-use-proxy-icon  nil)
+(setq frame-title-format nil)
 
 ;; Ask "y" or "n" instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -64,11 +67,6 @@
 ;; Set max columns to 80
 (setq-default fill-column 80)
 
-;; Change startup window size
-
-;; Enable windmove mode
-(windmove-default-keybindings)
-
 ;; Disable alarm sound
 (setq ring-bell-function 'ignore)
 
@@ -98,7 +96,14 @@
 (ido-mode 1)
 (setq ido-ignore-extensions t)
 
-(setq ispell-program-name "aspell")
+(defun smart-line-beginning ()
+  "Move point to the beginning of text on the current line; if that is already
+the current position of point, then move it to the beginning of the line."
+  (interactive)
+  (let ((pt (point)))
+    (beginning-of-line-text)
+    (when (eq pt (point))
+      (beginning-of-line))))
 
 (setq-default mode-line-format
               '(" "
@@ -156,11 +161,15 @@
   (setq ivy-use-virtual-buffers t)
   (global-set-key (kbd "C-;") 'counsel-imenu)
   (global-set-key "\C-s" 'swiper)
-  (global-set-key (kbd "s-g") 'counsel-ag)
+  (global-set-key (kbd "s-f") 'counsel-rg)
   (global-set-key (kbd "s-o") 'counsel-git)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
+
+(use-package counsel-etags
+  :config
+  (global-set-key (kbd "M-.") 'counsel-etags-find-tag-at-point))
 
 (use-package elpy
   :config
@@ -182,7 +191,7 @@
            company-dabbrev-code
            company-abbrev company-dabbrev
            )))
-  (setq company-idle-delay 1)
+  (setq company-idle-delay 0.5)
   (setq company-minimum-prefix-length 1)
   (with-eval-after-load 'company
     (define-key company-active-map (kbd "M-n") nil)
@@ -227,7 +236,12 @@
 (setq org-hide-leading-stars t)
 
 ;; KEYBINDINGS
+;; (setq mac-command-key-is-meta t)
+;; (setq mac-command-modifier 'meta)
+(global-set-key (kbd "M-z") 'undo-tree-undo)
 (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+(global-set-key (kbd "C-a") 'smart-line-beginning)
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -240,7 +254,7 @@
  '(flycheck-python-flake8-executable "/usr/local/bin/flake8")
  '(package-selected-packages
    (quote
-    (undo-tree racer flycheck-rust rust-mode smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+    (counsel-etags undo-tree racer flycheck-rust rust-mode smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
