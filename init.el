@@ -1,9 +1,9 @@
 ;; Set up package management
 (require 'package)
 (add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives
- 	     '("marmalade" . "http://marmalade-repo.org/packages/") t)
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
 
@@ -18,12 +18,15 @@
 ;;(load-theme 'base16-default-light t) ;;light theme
 
 ;; disable the title bar text
-(setq frame-title-format "")
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
+(setq ns-use-proxy-icon  nil)
+(setq frame-title-format nil)
 
 ;; Ask "y" or "n" instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-default-font "Courier 14" nil t)
+(set-default-font "Courier 15" nil t)
 
 ;; Change startup window size
 (add-to-list 'default-frame-alist '(width . 100)) ; characters
@@ -43,6 +46,7 @@
 
 ;; Enable line numbers and col numbers
 (global-linum-mode +1)
+(setq linum-format "%3d \u2502")
 (setq column-number-mode t)
 
 ;; Isearch convenience, space matches anything (non-greedy)
@@ -62,11 +66,6 @@
 
 ;; Set max columns to 80
 (setq-default fill-column 80)
-
-;; Change startup window size
-
-;; Enable windmove mode
-(windmove-default-keybindings)
 
 ;; Disable alarm sound
 (setq ring-bell-function 'ignore)
@@ -97,7 +96,14 @@
 (ido-mode 1)
 (setq ido-ignore-extensions t)
 
-(setq ispell-program-name "aspell")
+(defun smart-line-beginning ()
+  "Move point to the beginning of text on the current line; if that is already
+the current position of point, then move it to the beginning of the line."
+  (interactive)
+  (let ((pt (point)))
+    (beginning-of-line-text)
+    (when (eq pt (point))
+      (beginning-of-line))))
 
 (setq-default mode-line-format
               '(" "
@@ -122,6 +128,12 @@
 
 (use-package smex)
 
+
+(use-package exec-path-from-shell
+  :config
+  (exec-path-from-shell-initialize))
+
+(use-package smex)
 
 (use-package ido-completing-read+
   :config
@@ -152,36 +164,108 @@
 (use-package counsel
   :config
   (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
   (global-set-key (kbd "C-;") 'counsel-imenu)
   (global-set-key "\C-s" 'swiper)
-  (global-set-key (kbd "s-g") 'counsel-git-grep)
-  ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-  ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-  ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
-  ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "s-f") 'counsel-rg)
+  (global-set-key (kbd "s-o") 'counsel-git)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
 
+(use-package counsel-etags
+  :config
+  (global-set-key (kbd "M-.") 'counsel-etags-find-tag-at-point))
+
+(use-package elpy
+  :config
+  (elpy-enable)
+  (setq elpy-rpc-backend "jedi")
+  (setq elpy-rpc-python-command "python3"))
+
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
+
+(use-package company
+  :config
+  (add-hook 'prog-mode-hook 'company-mode)
+  (setq company-backends
+        '((company-files          ; files & directory
+           company-keywords       ; keywords
+           company-capf
+           company-dabbrev-code
+           company-abbrev company-dabbrev
+           )))
+  (setq company-idle-delay 0.5)
+  (setq company-minimum-prefix-length 1)
+  (with-eval-after-load 'company
+    (define-key company-active-map (kbd "M-n") nil)
+    (define-key company-active-map (kbd "M-p") nil)
+    (define-key company-active-map (kbd "C-n") #'company-select-next)
+    (define-key company-active-map (kbd "C-p") #'company-select-previous)))
+
+(use-package flycheck
+  :init
+  (setq flycheck-enabled-mode-hooks '(
+                                      c-mode-hook
+                                      c++-mode-hook
+                                      python-mode-hook
+                                      rust-mode-hook
+                                      ))
+  :config
+  (mapc (lambda (hook)
+          (add-hook hook 'flycheck-mode))
+        flycheck-enabled-mode-hooks)
+  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++14"))))
+
+(use-package rust-mode
+  :config
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+  (setq rust-format-on-save t))
+
+(use-package racer
+  :config
+  (add-hook 'rust-mode-hook #'racer-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook #'company-mode))
+
+(use-package flycheck-rust
+  :config
+  (with-eval-after-load 'rust-mode
+    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+
+;; ORG MODE
 ;; Make org mode source code syntax highlighted
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
 (setq org-hide-leading-stars t)
 
 ;; KEYBINDINGS
+;; (setq mac-command-key-is-meta t)
+;; (setq mac-command-modifier 'meta)
+(global-set-key (kbd "M-z") 'undo-tree-undo)
 (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+(global-set-key (kbd "C-a") 'smart-line-beginning)
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(elpy-modules
+   (quote
+    (elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
+ '(flycheck-python-flake8-executable "/usr/local/bin/flake8")
  '(package-selected-packages
    (quote
-    (which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+    (counsel-etags undo-tree racer flycheck-rust rust-mode smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(flycheck-error ((t (:underline "#ab4642"))))
+ '(flycheck-info ((t (:underline "#a1b56c"))))
+ '(flycheck-warning ((t (:underline "#dc9656")))))
