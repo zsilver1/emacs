@@ -170,6 +170,7 @@ the current position of point, then move it to the beginning of the line."
   (global-set-key (kbd "s-f") 'counsel-rg)
   (global-set-key (kbd "s-o") 'counsel-git)
   (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "s-x") 'counsel-M-x)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
 
@@ -177,76 +178,25 @@ the current position of point, then move it to the beginning of the line."
   :config
   (global-set-key (kbd "M-.") 'counsel-etags-find-tag-at-point))
 
-(use-package elpy
-  :config
-  (elpy-enable)
-  (setq elpy-rpc-backend "jedi")
-  (setq elpy-rpc-python-command "python3"))
-
-(use-package undo-tree
-  :config
-  (global-undo-tree-mode))
-
-(use-package company
-  :config
-  (add-hook 'prog-mode-hook 'company-mode)
-  (setq company-backends
-        '((company-files          ; files & directory
-           company-keywords       ; keywords
-           company-capf
-           company-dabbrev-code
-           company-abbrev company-dabbrev
-           )))
-  (setq company-idle-delay 0.5)
-  (setq company-minimum-prefix-length 1)
-  (with-eval-after-load 'company
-    (define-key company-active-map (kbd "M-n") nil)
-    (define-key company-active-map (kbd "M-p") nil)
-    (define-key company-active-map (kbd "C-n") #'company-select-next)
-    (define-key company-active-map (kbd "C-p") #'company-select-previous)))
-
-(use-package flycheck
-  :init
-  (setq flycheck-enabled-mode-hooks '(
-                                      c-mode-hook
-                                      c++-mode-hook
-                                      python-mode-hook
-                                      rust-mode-hook
-                                      ))
-  :config
-  (mapc (lambda (hook)
-          (add-hook hook 'flycheck-mode))
-        flycheck-enabled-mode-hooks)
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++14"))))
-
-(use-package rust-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
-  (setq rust-format-on-save t))
-
-(use-package racer
-  :config
-  (add-hook 'rust-mode-hook #'racer-mode)
-  (add-hook 'racer-mode-hook #'eldoc-mode)
-  (add-hook 'racer-mode-hook #'company-mode))
-
-(use-package flycheck-rust
-  :config
-  (with-eval-after-load 'rust-mode
-    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
-
 ;; ORG MODE
 ;; Make org mode source code syntax highlighted
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
 (setq org-hide-leading-stars t)
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-j") 'er/expand-region))
 
 ;; KEYBINDINGS
 ;; (setq mac-command-key-is-meta t)
 ;; (setq mac-command-modifier 'meta)
 (global-set-key (kbd "M-z") 'undo-tree-undo)
+(global-set-key (kbd "C-u") 'undo-tree-undo)
+(global-unset-key (kbd "C-x u"))
 (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
 (global-set-key (kbd "C-a") 'smart-line-beginning)
+(global-set-key (kbd "s-w") 'kill-ring-save)
+(global-set-key (kbd "s-i") 'hippie-expand)
+(global-set-key (kbd "M-i") 'hippie-expand)
 
 
 (custom-set-variables
