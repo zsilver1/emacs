@@ -85,10 +85,6 @@
 ;; Make all file names unique
 (require 'uniquify)
 
-;; Save your place in buffers
-(require 'saveplace)
-(setq-default save-place t)
-
 ;; Electric Pair mode
 (electric-pair-mode 1)
 
@@ -129,12 +125,6 @@ the current position of point, then move it to the beginning of the line."
 (use-package smex)
 
 
-(use-package exec-path-from-shell
-  :config
-  (exec-path-from-shell-initialize))
-
-(use-package smex)
-
 (use-package ido-completing-read+
   :config
   (ido-ubiquitous-mode 1))
@@ -173,10 +163,6 @@ the current position of point, then move it to the beginning of the line."
   (global-set-key (kbd "s-x") 'counsel-M-x)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
-
-(use-package counsel-etags
-  :config
-  (global-set-key (kbd "M-.") 'counsel-etags-find-tag-at-point))
 
 ;; ORG MODE
 ;; Make org mode source code syntax highlighted
