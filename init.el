@@ -156,8 +156,8 @@ the current position of point, then move it to the beginning of the line."
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
   (global-set-key (kbd "C-;") 'counsel-imenu)
-  (global-set-key "\C-s" 'swiper)
-  (global-set-key (kbd "s-f") 'counsel-rg)
+  (global-set-key (kbd "C-c s") 'swiper)
+  (global-set-key (kbd "C-c f") 'counsel-rg)
   (global-set-key (kbd "s-o") 'counsel-git)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "s-x") 'counsel-M-x)
@@ -169,21 +169,25 @@ the current position of point, then move it to the beginning of the line."
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
 (setq org-hide-leading-stars t)
+
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-j") 'er/expand-region))
 
 ;; KEYBINDINGS
 ;; (setq mac-command-key-is-meta t)
 ;; (setq mac-command-modifier 'meta)
-(global-set-key (kbd "M-z") 'undo-tree-undo)
-(global-set-key (kbd "C-u") 'undo-tree-undo)
+(global-set-key (kbd "C-u") 'undo)
 (global-unset-key (kbd "C-x u"))
 (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
 (global-set-key (kbd "C-a") 'smart-line-beginning)
 (global-set-key (kbd "s-w") 'kill-ring-save)
-(global-set-key (kbd "s-i") 'hippie-expand)
-(global-set-key (kbd "M-i") 'hippie-expand)
-
+(global-set-key (kbd "s-i") 'dabbrev-expand)
+(global-set-key (kbd "M-i") 'dabbrev-expand)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c b") 'org-iswitchb)
+(global-set-key (kbd "s-f") 'forward-word)
+(global-set-key (kbd "s-b") 'backward-word)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -192,12 +196,4 @@ the current position of point, then move it to the beginning of the line."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (counsel-etags undo-tree racer flycheck-rust rust-mode smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(flycheck-error ((t (:underline "#ab4642"))))
- '(flycheck-info ((t (:underline "#a1b56c"))))
- '(flycheck-warning ((t (:underline "#dc9656")))))
+    (counsel-etags undo-tree smex  which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
