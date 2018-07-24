@@ -35,6 +35,10 @@
 ;; Highlight corresponding parentheses when cursor is on one
 (show-paren-mode t)
 
+(save-place-mode 1)
+
+(global-auto-revert-mode t)
+
 ;; Turn off starting message
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message t)
@@ -114,13 +118,74 @@ the current position of point, then move it to the beginning of the line."
                 flycheck-mode-line
                 mode-line-end-spaces))
 
+(defun update-org-calendar ()
+  "Syncs emacs with icloud calendar."
+  (interactive)
+  (call-process "~/.emacs.d/cloudsync.sh"))
+
+(add-hook 'before-init-hook 'update-org-calendar)
+
+;; ORG MODE
+;; Make org mode source code syntax highlighted
+(setq org-src-fontify-natively t)
+(setq org-startup-indented t)
+(setq org-hide-leading-stars t)
+(setq org-agenda-files (quote ("~/Dropbox/org"
+                               "~/.emacs.d/calendar.org")))
+(setq org-directory "~/Dropbox/org")
+(setq org-default-notes-file "~/Dropbox/org/inbox.org")
+
+(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)"))))
+
+(setq org-todo-keyword-faces
+      (quote (("TODO" :foreground "red" :weight bold)
+              ("DONE" :foreground "forest green" :weight bold)
+              ("WAITING" :foreground "orange" :weight bold))))
 
 
+(global-set-key (kbd "C-c C-l") 'org-insert-link)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c b") 'org-iswitchb)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-'") 'org-cycle-agenda-files)
+
+(setq org-capture-templates
+      '(("n" "Note" entry (file+headline "~/Dropbox/org/notes.org" "Notes")
+	     "* Note %?\n%T")
+	    ("l" "Link" entry (file+headline "~/Dropbox/org/notes.org" "Links")
+	     "* %? %^L %^g \n%T" :prepend t)
+	    ("t" "To Do Item" entry (file+headline "~/Dropbox/org/tasks.org" "To Do Items")
+	     "* %?\n%T" :prepend t)))
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-j") 'er/expand-region))
+
+(setq org-agenda-timegrid-use-ampm t)
+
+;; for startup
+(setq inhibit-splash-screen t)
+(org-agenda-list)
+(delete-other-windows)
+
+;; KEYBINDINGS
+;; (setq mac-command-key-is-meta t)
+;; (setq mac-command-modifier 'meta)
+(global-set-key (kbd "C-u") 'undo)
+(global-unset-key (kbd "C-x u"))
+(global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+(global-set-key (kbd "C-a") 'smart-line-beginning)
+(global-set-key (kbd "s-w") 'kill-ring-save)
+(global-set-key (kbd "s-i") 'hippie-expand)
+(global-set-key (kbd "M-i") 'hippie-expand)
+(global-set-key (kbd "s-f") 'forward-word)
+(global-set-key (kbd "s-b") 'backward-word)
 
 ;; PACKAGES
 (use-package exec-path-from-shell
-    :config
-    (exec-path-from-shell-initialize))
+  :config
+  (exec-path-from-shell-initialize))
 
 (use-package smex)
 
@@ -140,7 +205,6 @@ the current position of point, then move it to the beginning of the line."
   (setq ido-enable-flex-matching t)
   (setq ido-use-faces nil)
   (setq flx-ido-threshold 10000))
-
 
 (use-package which-key
   :config
@@ -164,31 +228,6 @@ the current position of point, then move it to the beginning of the line."
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
 
-;; ORG MODE
-;; Make org mode source code syntax highlighted
-(setq org-src-fontify-natively t)
-(setq org-startup-indented t)
-(setq org-hide-leading-stars t)
-
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "C-j") 'er/expand-region))
-
-;; KEYBINDINGS
-;; (setq mac-command-key-is-meta t)
-;; (setq mac-command-modifier 'meta)
-(global-set-key (kbd "C-u") 'undo)
-(global-unset-key (kbd "C-x u"))
-(global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-(global-set-key (kbd "C-a") 'smart-line-beginning)
-(global-set-key (kbd "s-w") 'kill-ring-save)
-(global-set-key (kbd "s-i") 'dabbrev-expand)
-(global-set-key (kbd "M-i") 'dabbrev-expand)
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c b") 'org-iswitchb)
-(global-set-key (kbd "s-f") 'forward-word)
-(global-set-key (kbd "s-b") 'backward-word)
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -196,4 +235,10 @@ the current position of point, then move it to the beginning of the line."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (counsel-etags undo-tree smex  which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+    (dashboard counsel-etags undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
