@@ -27,6 +27,8 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (set-default-font "Courier 15" nil t)
+;; get rid of right fringe
+(set-face-attribute 'fringe nil :background nil)
 
 ;; Change startup window size
 (add-to-list 'default-frame-alist '(width . 100)) ; characters
@@ -123,25 +125,26 @@ the current position of point, then move it to the beginning of the line."
   (interactive)
   (call-process "~/.emacs.d/cloudsync.sh"))
 
-(add-hook 'before-init-hook 'update-org-calendar)
-
 ;; ORG MODE
 ;; Make org mode source code syntax highlighted
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
 (setq org-hide-leading-stars t)
+
 (setq org-agenda-files (quote ("~/Dropbox/org"
                                "~/.emacs.d/calendar.org")))
+
 (setq org-directory "~/Dropbox/org")
 (setq org-default-notes-file "~/Dropbox/org/inbox.org")
 
 (setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)"))))
+      (quote ((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)"))))
 
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
               ("DONE" :foreground "forest green" :weight bold)
-              ("WAITING" :foreground "orange" :weight bold))))
+              ("WAITING" :foreground "orange" :weight bold)
+              ("CANCELLED" :forground "grey" :weight bold))))
 
 
 (global-set-key (kbd "C-c C-l") 'org-insert-link)
@@ -152,13 +155,15 @@ the current position of point, then move it to the beginning of the line."
 (global-set-key (kbd "C-'") 'org-cycle-agenda-files)
 
 (setq org-capture-templates
-      '(("n" "Note" entry (file+headline "~/Dropbox/org/notes.org" "Notes")
-	     "* Note %?\n%T")
-	    ("l" "Link" entry (file+headline "~/Dropbox/org/notes.org" "Links")
-	     "* %? %^L %^g \n%T" :prepend t)
-	    ("t" "To Do Item" entry (file+headline "~/Dropbox/org/tasks.org" "To Do Items")
+      '(("n" "Note" entry (file+headline "~/Dropbox/org/notes.org" "Quick Notes")
+	     "* %?\n")
+	    ("t" "To Do Item" entry (file "~/Dropbox/org/tasks.org")
 	     "* %?\n%T" :prepend t)))
 
+(setq org-refile-targets (quote ((nil :maxlevel . 3)
+                                 (org-directory :maxlevel . 3))))
+(setq org-refile-use-outline-path t)
+;;(setq org-outline-path-complete-in-steps nil)
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-j") 'er/expand-region))
 
@@ -186,9 +191,6 @@ the current position of point, then move it to the beginning of the line."
 (use-package exec-path-from-shell
   :config
   (exec-path-from-shell-initialize))
-
-(use-package smex)
-
 
 (use-package ido-completing-read+
   :config
