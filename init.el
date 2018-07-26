@@ -27,6 +27,8 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (set-default-font "Courier 15" nil t)
+;; get rid of right fringe
+(set-face-attribute 'fringe nil :background nil)
 
 ;; Change startup window size
 (add-to-list 'default-frame-alist '(width . 100)) ; characters
@@ -34,6 +36,10 @@
 
 ;; Highlight corresponding parentheses when cursor is on one
 (show-paren-mode t)
+
+(save-place-mode 1)
+
+(global-auto-revert-mode t)
 
 ;; Turn off starting message
 (setq inhibit-startup-message t)
@@ -85,10 +91,6 @@
 ;; Make all file names unique
 (require 'uniquify)
 
-;; Save your place in buffers
-(require 'saveplace)
-(setq-default save-place t)
-
 ;; Electric Pair mode
 (electric-pair-mode 1)
 
@@ -118,16 +120,77 @@ the current position of point, then move it to the beginning of the line."
                 flycheck-mode-line
                 mode-line-end-spaces))
 
+(defun update-org-calendar ()
+  "Syncs emacs with icloud calendar."
+  (interactive)
+  (call-process "~/.emacs.d/cloudsync.sh"))
+
+;; ORG MODE
+;; Make org mode source code syntax highlighted
+(setq org-src-fontify-natively t)
+(setq org-startup-indented t)
+(setq org-hide-leading-stars t)
+
+(setq org-agenda-files (quote ("~/Dropbox/org"
+                               "~/.emacs.d/calendar.org")))
+
+(setq org-directory "~/Dropbox/org")
+(setq org-default-notes-file "~/Dropbox/org/inbox.org")
+
+(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)"))))
+
+(setq org-todo-keyword-faces
+      (quote (("TODO" :foreground "red" :weight bold)
+              ("DONE" :foreground "forest green" :weight bold)
+              ("WAITING" :foreground "orange" :weight bold)
+              ("CANCELLED" :forground "grey" :weight bold))))
 
 
+(global-set-key (kbd "C-c C-l") 'org-insert-link)
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c b") 'org-iswitchb)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-'") 'org-cycle-agenda-files)
+
+(setq org-capture-templates
+      '(("n" "Note" entry (file+headline "~/Dropbox/org/notes.org" "Quick Notes")
+	     "* %?\n")
+	    ("t" "To Do Item" entry (file "~/Dropbox/org/tasks.org")
+	     "* %?\n%T" :prepend t)))
+
+(setq org-refile-targets (quote ((nil :maxlevel . 3)
+                                 (org-directory :maxlevel . 3))))
+(setq org-refile-use-outline-path t)
+;;(setq org-outline-path-complete-in-steps nil)
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-j") 'er/expand-region))
+
+(setq org-agenda-timegrid-use-ampm t)
+
+;; for startup
+(setq inhibit-splash-screen t)
+(org-agenda-list)
+(delete-other-windows)
+
+;; KEYBINDINGS
+;; (setq mac-command-key-is-meta t)
+;; (setq mac-command-modifier 'meta)
+(global-set-key (kbd "C-u") 'undo)
+(global-unset-key (kbd "C-x u"))
+(global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
+(global-set-key (kbd "C-a") 'smart-line-beginning)
+(global-set-key (kbd "s-w") 'kill-ring-save)
+(global-set-key (kbd "s-i") 'hippie-expand)
+(global-set-key (kbd "M-i") 'hippie-expand)
+(global-set-key (kbd "s-f") 'forward-word)
+(global-set-key (kbd "s-b") 'backward-word)
 
 ;; PACKAGES
-
 (use-package exec-path-from-shell
   :config
   (exec-path-from-shell-initialize))
-
-(use-package smex)
 
 (use-package ido-completing-read+
   :config
@@ -145,7 +208,6 @@ the current position of point, then move it to the beginning of the line."
   (setq ido-use-faces nil)
   (setq flx-ido-threshold 10000))
 
-
 (use-package which-key
   :config
   (which-key-mode))
@@ -160,106 +222,25 @@ the current position of point, then move it to the beginning of the line."
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
   (global-set-key (kbd "C-;") 'counsel-imenu)
-  (global-set-key "\C-s" 'swiper)
-  (global-set-key (kbd "s-f") 'counsel-rg)
+  (global-set-key (kbd "C-c s") 'swiper)
+  (global-set-key (kbd "C-c f") 'counsel-rg)
   (global-set-key (kbd "s-o") 'counsel-git)
   (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "s-x") 'counsel-M-x)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
-
-(use-package counsel-etags
-  :config
-  (global-set-key (kbd "M-.") 'counsel-etags-find-tag-at-point))
-
-(use-package elpy
-  :config
-  (elpy-enable)
-  (setq elpy-rpc-backend "jedi")
-  (setq elpy-rpc-python-command "python3"))
-
-(use-package undo-tree
-  :config
-  (global-undo-tree-mode))
-
-(use-package company
-  :config
-  (add-hook 'prog-mode-hook 'company-mode)
-  (setq company-backends
-        '((company-files          ; files & directory
-           company-keywords       ; keywords
-           company-capf
-           company-dabbrev-code
-           company-abbrev company-dabbrev
-           )))
-  (setq company-idle-delay 0.5)
-  (setq company-minimum-prefix-length 1)
-  (with-eval-after-load 'company
-    (define-key company-active-map (kbd "M-n") nil)
-    (define-key company-active-map (kbd "M-p") nil)
-    (define-key company-active-map (kbd "C-n") #'company-select-next)
-    (define-key company-active-map (kbd "C-p") #'company-select-previous)))
-
-(use-package flycheck
-  :init
-  (setq flycheck-enabled-mode-hooks '(
-                                      c-mode-hook
-                                      c++-mode-hook
-                                      python-mode-hook
-                                      rust-mode-hook
-                                      ))
-  :config
-  (mapc (lambda (hook)
-          (add-hook hook 'flycheck-mode))
-        flycheck-enabled-mode-hooks)
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++14"))))
-
-(use-package rust-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
-  (setq rust-format-on-save t))
-
-(use-package racer
-  :config
-  (add-hook 'rust-mode-hook #'racer-mode)
-  (add-hook 'racer-mode-hook #'eldoc-mode)
-  (add-hook 'racer-mode-hook #'company-mode))
-
-(use-package flycheck-rust
-  :config
-  (with-eval-after-load 'rust-mode
-    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
-
-;; ORG MODE
-;; Make org mode source code syntax highlighted
-(setq org-src-fontify-natively t)
-(setq org-startup-indented t)
-(setq org-hide-leading-stars t)
-
-;; KEYBINDINGS
-;; (setq mac-command-key-is-meta t)
-;; (setq mac-command-modifier 'meta)
-(global-set-key (kbd "M-z") 'undo-tree-undo)
-(global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
-(global-set-key (kbd "C-a") 'smart-line-beginning)
-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(elpy-modules
-   (quote
-    (elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-django elpy-module-sane-defaults)))
- '(flycheck-python-flake8-executable "/usr/local/bin/flake8")
  '(package-selected-packages
    (quote
-    (counsel-etags undo-tree racer flycheck-rust rust-mode smex flycheck elpy which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+    (dashboard counsel-etags undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(flycheck-error ((t (:underline "#ab4642"))))
- '(flycheck-info ((t (:underline "#a1b56c"))))
- '(flycheck-warning ((t (:underline "#dc9656")))))
+ )
