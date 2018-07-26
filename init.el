@@ -94,10 +94,6 @@
 ;; Electric Pair mode
 (electric-pair-mode 1)
 
-(setq ido-everywhere t)
-(ido-mode 1)
-(setq ido-ignore-extensions t)
-
 (defun smart-line-beginning ()
   "Move point to the beginning of text on the current line; if that is already
 the current position of point, then move it to the beginning of the line."
@@ -120,59 +116,14 @@ the current position of point, then move it to the beginning of the line."
                 flycheck-mode-line
                 mode-line-end-spaces))
 
-(defun update-org-calendar ()
-  "Syncs emacs with icloud calendar."
-  (interactive)
-  (call-process "~/.emacs.d/cloudsync.sh"))
-
-;; ORG MODE
 ;; Make org mode source code syntax highlighted
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
 (setq org-hide-leading-stars t)
 
-(setq org-agenda-files (quote ("~/Dropbox/org"
-                               "~/.emacs.d/calendar.org")))
 
-(setq org-directory "~/Dropbox/org")
-(setq org-default-notes-file "~/Dropbox/org/inbox.org")
-
-(setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)"))))
-
-(setq org-todo-keyword-faces
-      (quote (("TODO" :foreground "red" :weight bold)
-              ("DONE" :foreground "forest green" :weight bold)
-              ("WAITING" :foreground "orange" :weight bold)
-              ("CANCELLED" :forground "grey" :weight bold))))
-
-
-(global-set-key (kbd "C-c C-l") 'org-insert-link)
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c b") 'org-iswitchb)
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "C-'") 'org-cycle-agenda-files)
-
-(setq org-capture-templates
-      '(("n" "Note" entry (file+headline "~/Dropbox/org/notes.org" "Quick Notes")
-	     "* %?\n")
-	    ("t" "To Do Item" entry (file "~/Dropbox/org/tasks.org")
-	     "* %?\n%T" :prepend t)))
-
-(setq org-refile-targets (quote ((nil :maxlevel . 3)
-                                 (org-directory :maxlevel . 3))))
-(setq org-refile-use-outline-path t)
-;;(setq org-outline-path-complete-in-steps nil)
 (with-eval-after-load 'org
   (define-key org-mode-map (kbd "C-j") 'er/expand-region))
-
-(setq org-agenda-timegrid-use-ampm t)
-
-;; for startup
-(setq inhibit-splash-screen t)
-(org-agenda-list)
-(delete-other-windows)
 
 ;; KEYBINDINGS
 ;; (setq mac-command-key-is-meta t)
@@ -182,8 +133,8 @@ the current position of point, then move it to the beginning of the line."
 (global-set-key (kbd "C-x C-b") 'ivy-switch-buffer)
 (global-set-key (kbd "C-a") 'smart-line-beginning)
 (global-set-key (kbd "s-w") 'kill-ring-save)
-(global-set-key (kbd "s-i") 'hippie-expand)
-(global-set-key (kbd "M-i") 'hippie-expand)
+(global-set-key (kbd "s-i") 'dabbrev-expand)
+(global-set-key (kbd "M-i") 'dabbrev-expand)
 (global-set-key (kbd "s-f") 'forward-word)
 (global-set-key (kbd "s-b") 'backward-word)
 
@@ -191,22 +142,6 @@ the current position of point, then move it to the beginning of the line."
 (use-package exec-path-from-shell
   :config
   (exec-path-from-shell-initialize))
-
-(use-package ido-completing-read+
-  :config
-  (ido-ubiquitous-mode 1))
-
-(use-package ido-vertical-mode
-  :config
-  (ido-vertical-mode 1)
-  (setq ido-vertical-define-keys 'C-n-and-C-p-only))
-
-(use-package flx-ido
-  :config
-  (flx-ido-mode 1)
-  (setq ido-enable-flex-matching t)
-  (setq ido-use-faces nil)
-  (setq flx-ido-threshold 10000))
 
 (use-package which-key
   :config
@@ -221,12 +156,15 @@ the current position of point, then move it to the beginning of the line."
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
+  (define-key counsel-find-file-map (kbd "RET") #'ivy-alt-done)
   (global-set-key (kbd "C-;") 'counsel-imenu)
   (global-set-key (kbd "C-c s") 'swiper)
+  (global-set-key (kbd "C-c C-s") 'swiper)
   (global-set-key (kbd "C-c f") 'counsel-rg)
   (global-set-key (kbd "s-o") 'counsel-git)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "s-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
 
