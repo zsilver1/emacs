@@ -168,6 +168,18 @@ the current position of point, then move it to the beginning of the line."
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil))
 
+(use-package company
+  :config
+  (add-hook 'prog-mode-hook 'company-mode)
+  (define-key company-active-map (kbd "C-n") 'company-select-next-or-abort)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous-or-abort)
+  (setq company-backends
+        '((company-files          ; files & directory
+           company-keywords       ; keywords
+           company-capf)
+          (company-abbrev company-dabbrev)
+          )))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -175,7 +187,7 @@ the current position of point, then move it to the beginning of the line."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (dashboard counsel-etags undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
+    (company-quickhelp company dashboard counsel-etags undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
