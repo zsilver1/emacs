@@ -188,44 +188,44 @@ the current position of point, then move it to the beginning of the line."
   (setq company-idle-delay 0.2))
 
 
-(use-package flycheck
-  :hook ((c-mode . flycheck-mode)
-         (c++-mode . flycheck-mode)
-         (python-mode . flycheck-mode)))
+;; (use-package flycheck
+;;   :hook ((c-mode . flycheck-mode)
+;;          (c++-mode . flycheck-mode)
+;;          (python-mode . flycheck-mode)))
 
-(use-package pipenv
-  :hook (python-mode . pipenv-mode))
+;; (use-package pipenv
+;;   :hook (python-mode . pipenv-mode))
 
 
-(use-package lsp-mode
-  :bind (("C-c h" . lsp-describe-thing-at-point))
-  :config
-  (setq create-lockfiles nil)
-  (setq lsp-enable-eldoc nil)
-  (setq lsp-highlight-symbol-at-point nil)
-  ;; make sure we have lsp-imenu everywhere we have LSP
-  (require 'lsp-imenu)
-  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
-  (setq lsp-message-project-root-warning t))
+;; (use-package lsp-mode
+;;   :bind (("C-c h" . lsp-describe-thing-at-point))
+;;   :config
+;;   (setq create-lockfiles nil)
+;;   (setq lsp-enable-eldoc nil)
+;;   (setq lsp-highlight-symbol-at-point nil)
+;;   ;; make sure we have lsp-imenu everywhere we have LSP
+;;   (require 'lsp-imenu)
+;;   (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+;;   (setq lsp-message-project-root-warning t))
 
-(use-package lsp-python
-  :hook (python-mode . lsp-python-enable))
+;; (use-package lsp-python
+;;   :hook (python-mode . lsp-python-enable))
 
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :config
-  ;; (setq lsp-ui-flycheck-live-reporting nil)
-  (setq lsp-ui-sideline-ignore-duplicate t)
-  (setq lsp-ui-sideline-enable nil)
-  (setq lsp-ui-sideline-show-hover nil)
-  (setq lsp-ui-sideline-show-symbol nil)
-  (setq lsp-ui-peek-enable nil)
-  (setq lsp-ui-doc-enable nil))
+;; (use-package lsp-ui
+;;   :hook (lsp-mode . lsp-ui-mode)
+;;   :config
+;;   ;; (setq lsp-ui-flycheck-live-reporting nil)
+;;   (setq lsp-ui-sideline-ignore-duplicate t)
+;;   (setq lsp-ui-sideline-enable nil)
+;;   (setq lsp-ui-sideline-show-hover nil)
+;;   (setq lsp-ui-sideline-show-symbol nil)
+;;   (setq lsp-ui-peek-enable nil)
+;;   (setq lsp-ui-doc-enable nil))
 
-(use-package company-lsp
-  :after lsp-mode company
-  :config
-  (push 'company-lsp company-backends))
+;; (use-package company-lsp
+;;   :after lsp-mode company
+;;   :config
+;;   (push 'company-lsp company-backends))
 
 ;; (defun cquery//enable ()
 ;;   (condition-case nil
