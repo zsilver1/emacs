@@ -173,16 +173,22 @@ the current position of point, then move it to the beginning of the line."
   :config
   (which-key-mode))
 
+(use-package mood-line
+  :config
+  (mood-line-mode))
+
 (use-package expand-region
   :bind ("C-j" . er/expand-region)
   :init (define-key org-mode-map "\C-j" 'er/expand-region)
-:config
+  :config
   (setq shift-select-mode nil))
 
 (use-package counsel
   :demand
   :bind (("C-;" . counsel-imenu)
          ("C-c s" . swiper)
+         ("C-s" . swiper-isearch)
+         ("C-r" . swiper-isearch-backward)
          ("C-c C-s" . swiper)
          ("C-c f" . counsel-rg)
          ("C-c o" . counsel-git)
@@ -193,10 +199,7 @@ the current position of point, then move it to the beginning of the line."
          ("C-c r" . counsel-recentf)
          (:map counsel-find-file-map
                ("RET" . ivy-alt-done)
-               ("C-j" . ivy-immediate-done))
-         ;; (:map org-mode-map
-         ;;       ("C-s" . swiper))
-         )
+               ("C-j" . ivy-immediate-done)))
   :config
   (ivy-mode 1)
   (add-hook 'org-mode-hook
@@ -223,57 +226,15 @@ the current position of point, then move it to the beginning of the line."
           ))
   (setq company-idle-delay 0.2))
 
+(use-package anaconda-mode
+  :config
+  (add-hook 'python-mode-hook 'anaconda-mode)
+  (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
 
-;; (use-package flycheck
-;;   :hook ((c-mode . flycheck-mode)
-;;          (c++-mode . flycheck-mode)
-;;          (python-mode . flycheck-mode)))
-
-;; (use-package pipenv
-;;   :hook (python-mode . pipenv-mode))
-
-
-;; (use-package lsp-mode
-;;   :bind (("C-c h" . lsp-describe-thing-at-point))
-;;   :config
-;;   (setq create-lockfiles nil)
-;;   (setq lsp-enable-eldoc nil)
-;;   (setq lsp-highlight-symbol-at-point nil)
-;;   ;; make sure we have lsp-imenu everywhere we have LSP
-;;   (require 'lsp-imenu)
-;;   (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
-;;   (setq lsp-message-project-root-warning t))
-
-;; (use-package lsp-python
-;;   :hook (python-mode . lsp-python-enable))
-
-;; (use-package lsp-ui
-;;   :hook (lsp-mode . lsp-ui-mode)
-;;   :config
-;;   ;; (setq lsp-ui-flycheck-live-reporting nil)
-;;   (setq lsp-ui-sideline-ignore-duplicate t)
-;;   (setq lsp-ui-sideline-enable nil)
-;;   (setq lsp-ui-sideline-show-hover nil)
-;;   (setq lsp-ui-sideline-show-symbol nil)
-;;   (setq lsp-ui-peek-enable nil)
-;;   (setq lsp-ui-doc-enable nil))
-
-;; (use-package company-lsp
-;;   :after lsp-mode company
-;;   :config
-;;   (push 'company-lsp company-backends))
-
-;; (defun cquery//enable ()
-;;   (condition-case nil
-;;       (lsp-cquery-enable)
-;;     (user-error nil)))
-
-;;   (use-package cquery
-;;     :commands lsp-cquery-enable
-;;     :init (add-hook 'c-mode-hook #'cquery//enable)
-;;           (add-hook 'c++-mode-hook #'cquery//enable)
-;;   :config
-;;   (setq cquery-executable "/usr/local/bin/cquery"))
+(use-package company-anaconda
+  :config
+  (eval-after-load "company"
+    '(add-to-list 'company-backends 'company-anaconda)))
 
 (use-package crux
   :bind
@@ -384,7 +345,7 @@ made unique when necessary."
           (inc-suffixf ref)))
       ref)))
 
-
+(setq ispell-program-name "aspell")
 (setq mac-command-key-is-meta t)
 (setq mac-command-modifier 'meta)
 
@@ -407,13 +368,15 @@ made unique when necessary."
  '(custom-safe-themes
    (quote
     ("16dd114a84d0aeccc5ad6fd64752a11ea2e841e3853234f19dc02a7b91f5d661" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" default)))
+ '(doom-modeline-mode nil)
  '(lsp-ui-sideline-enable nil)
+ '(mood-line-mode t)
  '(org-cycle-hook
    (quote
     (org-cycle-hide-archived-subtrees org-cycle-show-empty-lines org-optimize-window-after-visibility-change)))
  '(package-selected-packages
    (quote
-    (dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux cquery lsp-python company-lsp lsp-ui pipenv spaceline company-box eglot company dashboard counsel-etags undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme)))
+    (mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme)))
  '(unpackaged/org-export-html-with-useful-ids-mode t)
  '(yas-global-mode t))
 (custom-set-faces
