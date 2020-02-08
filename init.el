@@ -80,7 +80,7 @@
 ;; Deletes selected region
 (delete-selection-mode 1)
 
-(hl-line-mode 1)
+;; (hl-line-mode 1)
 
 ;; Make all file names unique
 (require 'uniquify)
@@ -102,22 +102,6 @@ the current position of point, then move it to the beginning of the line."
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
 (setq org-hide-leading-stars t)
-
-;; MODE LINE
-;; (setq-default mode-line-format
-;;               '("%e"
-;;                 mode-line-front-space
-;;                 mode-line-modified
-;;                 " "
-;;                 default-directory
-;;                 mode-line-buffer-identification
-;;                 " "
-;;                 mode-line-position
-;;                 (vc-mode vc-mode)
-;;                 (flycheck-mode flycheck-mode-line)
-;;                 " "
-;;                 mode-line-misc-info
-;;                 mode-line-end-spaces))
 
 
 ;; KEYBINDINGS
@@ -224,17 +208,48 @@ the current position of point, then move it to the beginning of the line."
            company-capf
            company-dabbrev)
           ))
-  (setq company-idle-delay 0.2))
+  (setq company-idle-delay 0.2)
+  )
 
-(use-package anaconda-mode
-  :config
-  (add-hook 'python-mode-hook 'anaconda-mode)
-  (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
+;; (use-package anaconda-mode
+;;   :config
+;;   (add-hook 'python-mode-hook 'anaconda-mode)
+;;   (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
 
-(use-package company-anaconda
+;; (use-package company-anaconda
+;;   :config
+;;   (eval-after-load "company"
+;;     '(add-to-list 'company-backends 'company-anaconda)))
+
+(use-package lsp-mode
+  :init (setq lsp-keymap-prefix "C-c l")
+  :bind (("M-." . lsp-find-definition)
+         ("M-?" . lsp-find-references))
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (python-mode . lsp)
+         (rust-mode . lsp)
+         ;; if you want which-key integration
+         ;; (lsp-mode . lsp-enable-which-key-integration)
+         )
+  :commands lsp
   :config
-  (eval-after-load "company"
-    '(add-to-list 'company-backends 'company-anaconda)))
+  (setq lsp-prefer-flymake nil)
+  (setq lsp-signature-render-documentation nil))
+
+(use-package lsp-ui :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-sideline-enable t)
+  (setq lsp-ui-doc-enable nil))
+
+(use-package company-lsp :commands company-lsp)
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+
+(use-package flycheck
+  :hook ((python-mode . flycheck-mode)
+         (rust-mode . flycheck-mode)))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
 
 (use-package crux
   :bind
@@ -362,12 +377,12 @@ made unique when necessary."
  '(ansi-color-names-vector
    ["#2e3436" "#a40000" "#4e9a06" "#c4a000" "#204a87" "#5c3566" "#729fcf" "#eeeeec"])
  '(ansi-term-color-vector
-   [unspecified "#f8f8f8" "#ab4642" "#a1b56c" "#f7ca88" "#7cafc2" "#ba8baf" "#7cafc2" "#383838"] t)
+   [unspecified "#181818" "#ab4642" "#a1b56c" "#f7ca88" "#7cafc2" "#ba8baf" "#7cafc2" "#d8d8d8"])
  '(company-box-enable-icon nil)
- '(custom-enabled-themes (quote (base16-default-dark)))
+ '(custom-enabled-themes (quote (whiteboard)))
  '(custom-safe-themes
    (quote
-    ("16dd114a84d0aeccc5ad6fd64752a11ea2e841e3853234f19dc02a7b91f5d661" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" default)))
+    ("99c86852decaeb0c6f51ce8bd46e4906a4f28ab4c5b201bdc3fdf85b24f88518" "36746ad57649893434c443567cb3831828df33232a7790d232df6f5908263692" "9be1d34d961a40d94ef94d0d08a364c3d27201f3c98c9d38e36f10588469ea57" "3be1f5387122b935a26e02795196bc90860c57a62940f768f138b02383d9a257" "146061a7ceea4ccc75d975a3bb41432382f656c50b9989c7dc1a7bb6952f6eb4" "16dd114a84d0aeccc5ad6fd64752a11ea2e841e3853234f19dc02a7b91f5d661" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" default)))
  '(doom-modeline-mode nil)
  '(lsp-ui-sideline-enable nil)
  '(mood-line-mode t)
@@ -376,7 +391,7 @@ made unique when necessary."
     (org-cycle-hide-archived-subtrees org-cycle-show-empty-lines org-optimize-window-after-visibility-change)))
  '(package-selected-packages
    (quote
-    (mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme)))
+    (lsp-ivy company-lsp lsp-ui blacken mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme)))
  '(unpackaged/org-export-html-with-useful-ids-mode t)
  '(yas-global-mode t))
 (custom-set-faces
@@ -384,4 +399,4 @@ made unique when necessary."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-box-candidate ((t (:foreground "white")))))
+ )
