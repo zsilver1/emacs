@@ -82,41 +82,28 @@
 ;; Deletes selected region
 (delete-selection-mode 1)
 
-;; (hl-line-mode 1)
-
 ;; Make all file names unique
 (require 'uniquify)
 
 ;; Electric Pair mode
 (electric-pair-mode 1)
 
-
-(defun smart-line-beginning ()
-  "Move point to the beginning of text on the current line; if that is already
-the current position of point, then move it to the beginning of the line."
-  (interactive)
-  (let ((pt (point)))
-    (beginning-of-line-text)
-    (when (eq pt (point))
-      (beginning-of-line))))
-
 ;; Make org mode source code syntax highlighted
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
 (setq org-hide-leading-stars t)
 
-
 ;; KEYBINDINGS
 (global-set-key (kbd "C-u") 'undo)
 (global-unset-key (kbd "C-x u"))
-(global-set-key (kbd "C-a") 'smart-line-beginning)
-(global-set-key (kbd "s-w") 'kill-ring-save)
-(global-set-key (kbd "s-i") 'dabbrev-expand)
 (global-set-key (kbd "M-i") 'dabbrev-expand)
-(global-set-key (kbd "s-f") 'forward-word)
-(global-set-key (kbd "s-b") 'backward-word)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
+
+(defun zs/term ()
+  (interactive)
+  (ansi-term (getenv "SHELL")))
+(global-set-key (kbd "M-t") 'zs/term)
 
 (if (eq system-type 'darwin)
     (setq mac-option-key-is-meta nil
@@ -124,8 +111,8 @@ the current position of point, then move it to the beginning of the line."
           mac-command-modifier 'meta
           mac-option-modifier 'none))
 
-;; PACKAGES
 
+;; PACKAGES
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
   :config
@@ -146,11 +133,15 @@ the current position of point, then move it to the beginning of the line."
   (define-key org-mode-map "\C-j" 'er/expand-region))
 
 (use-package doom-themes
+  :if (display-graphic-p)
   :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
   (load-theme 'doom-one-light t))
+
+;; if above themes not used
+(unless (display-graphic-p)
+    (load-theme 'wombat t))
 
 (use-package counsel
   :demand
@@ -223,20 +214,26 @@ the current position of point, then move it to the beginning of the line."
 
 (use-package crux
   :bind
-  (("C-c I" . crux-find-user-init-file)
+  (("C-a" . crux-move-beginning-of-line)
+   ("C-c I" . crux-find-user-init-file)
    ("C-c D" . crux-delete-file-and-buffer)
    ("C-c R" . crux-rename-file-and-buffer)
-   ("C-c t" . crux-visit-term-buffer)
    ("C-c C" . crux-copy-file-preserve-attributes)))
+
+(use-package undo-tree
+  :bind (("C-u" . undo-tree-undo)
+         ("C-x u" . undo-tree-visualize))
+  :config
+  (global-undo-tree-mode))
 
 (use-package company-box
   :hook (company-mode . company-box-mode)
   :config
   (setq company-box-enable-icon nil))
 
-(when (display-graphic-p)
-  (use-package all-the-icons-ivy
-    :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup)))
+(use-package all-the-icons-ivy
+  :if (display-graphic-p)
+  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
 
 (load custom-file 'noerror)
 (load "org.el")
