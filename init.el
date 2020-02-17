@@ -5,6 +5,8 @@
                          ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
+(setq custom-file "~/.emacs.d/custom.el")
+
 ;; Set up use package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -21,7 +23,7 @@
 ;; Ask "y" or "n" instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-default-font "Courier 16" nil t)
+(set-default-font "Jetbrains Mono 15" nil t)
 ;; get rid of right fringe
 (set-face-attribute 'fringe nil :background nil)
 
@@ -118,36 +120,6 @@ the current position of point, then move it to the beginning of the line."
 
 ;; PACKAGES
 
-(use-package base16-theme
-  :if window-system
-  :config
-  (load-theme 'base16-default-dark t))
-
-(use-package worf
-  :config
-  ;; use ivy to insert a link to a heading in the current document
-  ;; based on `worf-goto`
-  (defun zs/worf-insert-internal-link ()
-    "Use ivy to insert a link to a heading in the current `org-mode' document. Code is based on `worf-goto'."
-    (interactive)
-    (let ((cands (worf--goto-candidates)))
-      (ivy-read "Heading: " cands
-                :action 'zs/worf-insert-internal-link-action)))
-  (defun zs/worf-insert-internal-link-action (x)
-    "Insert link for `zs/worf-insert-internal-link'"
-    ;; go to heading
-    (save-excursion
-      (goto-char (cdr x))
-      ;; store link
-      (call-interactively 'org-store-link)
-      )
-    ;; return to original point and insert link
-    (org-insert-last-stored-link 1)
-    ;; org-insert-last-stored-link adds a newline so delete this
-    (delete-backward-char 1)
-    )
-  (define-key org-mode-map (kbd "C-c C-l") 'zs/worf-insert-internal-link))
-
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
   :config
@@ -157,22 +129,28 @@ the current position of point, then move it to the beginning of the line."
   :config
   (which-key-mode))
 
+
 (use-package mood-line
   :config
   (mood-line-mode))
 
 (use-package expand-region
   :bind ("C-j" . er/expand-region)
-  :init (define-key org-mode-map "\C-j" 'er/expand-region)
   :config
-  (setq shift-select-mode nil))
+  (setq shift-select-mode nil)
+  (define-key org-mode-map "\C-j" 'er/expand-region))
+
+(use-package doom-themes
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-one-light t))
 
 (use-package counsel
   :demand
   :bind (("C-;" . counsel-imenu)
          ("C-c s" . swiper)
-         ("C-s" . swiper-isearch)
-         ("C-r" . swiper-isearch-backward)
          ("C-c C-s" . swiper)
          ("C-c f" . counsel-rg)
          ("C-c o" . counsel-git)
@@ -211,16 +189,6 @@ the current position of point, then move it to the beginning of the line."
   (setq company-idle-delay 0.2)
   )
 
-;; (use-package anaconda-mode
-;;   :config
-;;   (add-hook 'python-mode-hook 'anaconda-mode)
-;;   (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
-
-;; (use-package company-anaconda
-;;   :config
-;;   (eval-after-load "company"
-;;     '(add-to-list 'company-backends 'company-anaconda)))
-
 (use-package lsp-mode
   :init (setq lsp-keymap-prefix "C-c l")
   :bind (("M-." . lsp-find-definition)
@@ -251,6 +219,9 @@ the current position of point, then move it to the beginning of the line."
 (use-package company-box
   :hook (company-mode . company-box-mode))
 
+(use-package all-the-icons-ivy
+  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
+
 (use-package crux
   :bind
   (("C-c I" . crux-find-user-init-file)
@@ -259,144 +230,5 @@ the current position of point, then move it to the beginning of the line."
    ("C-c t" . crux-visit-term-buffer)
    ("C-c C" . crux-copy-file-preserve-attributes)))
 
-
-(setq org-publish-project-alist
-      '(("Shetlandic"
-         :base-directory "~/Documents/Constructed/Shetlandic/"
-         :publishing-directory "~/Documents/Constructed/Shetlandic/static"
-         :publishing-function org-html-publish-to-html
-         :exclude "proto.*")))
-
-
-(use-package dash-functional)
-
-
-(define-minor-mode unpackaged/org-export-html-with-useful-ids-mode
-  "Attempt to export Org as HTML with useful link IDs.
-Instead of random IDs like \"#orga1b2c3\", use heading titles,
-made unique when necessary."
-  :global t
-  (if unpackaged/org-export-html-with-useful-ids-mode
-      (progn
-        (advice-add #'org-export-new-title-reference :override #'unpackaged/org-export-new-title-reference)
-        (advice-add #'org-export-get-reference :override #'unpackaged/org-export-get-reference))
-    (advice-remove #'org-export-new-title-reference #'unpackaged/org-export-new-title-reference)
-    (advice-remove #'org-export-get-reference #'unpackaged/org-export-get-reference)))
-
-(defun unpackaged/org-export-get-reference (datum info)
-  "Like `org-export-get-reference', except uses heading titles instead of random numbers."
-  (let ((cache (plist-get info :internal-references)))
-    (or (car (rassq datum cache))
-        (let* ((crossrefs (plist-get info :crossrefs))
-               (cells (org-export-search-cells datum))
-               ;; Preserve any pre-existing association between
-               ;; a search cell and a reference, i.e., when some
-               ;; previously published document referenced a location
-               ;; within current file (see
-               ;; `org-publish-resolve-external-link').
-               ;;
-               ;; However, there is no guarantee that search cells are
-               ;; unique, e.g., there might be duplicate custom ID or
-               ;; two headings with the same title in the file.
-               ;;
-               ;; As a consequence, before re-using any reference to
-               ;; an element or object, we check that it doesn't refer
-               ;; to a previous element or object.
-               (new (or (cl-some
-                         (lambda (cell)
-                           (let ((stored (cdr (assoc cell crossrefs))))
-                             (when stored
-                               (let ((old (org-export-format-reference stored)))
-                                 (and (not (assoc old cache)) stored)))))
-                         cells)
-                        (when (org-element-property :raw-value datum)
-                          ;; Heading with a title
-                          (unpackaged/org-export-new-title-reference datum cache))
-                        ;; NOTE: This probably breaks some Org Export
-                        ;; feature, but if it does what I need, fine.
-                        (org-export-format-reference
-                         (org-export-new-reference cache))))
-               (reference-string new))
-          ;; Cache contains both data already associated to
-          ;; a reference and in-use internal references, so as to make
-          ;; unique references.
-          (dolist (cell cells) (push (cons cell new) cache))
-          ;; Retain a direct association between reference string and
-          ;; DATUM since (1) not every object or element can be given
-          ;; a search cell (2) it permits quick lookup.
-          (push (cons reference-string datum) cache)
-          (plist-put info :internal-references cache)
-          reference-string))))
-
-(defun unpackaged/org-export-new-title-reference (datum cache)
-  "Return new reference for DATUM that is unique in CACHE."
-  (cl-macrolet ((inc-suffixf (place)
-                             `(progn
-                                (string-match (rx bos
-                                                  (minimal-match (group (1+ anything)))
-                                                  (optional "--" (group (1+ digit)))
-                                                  eos)
-                                              ,place)
-                                ;; HACK: `s1' instead of a gensym.
-                                (-let* (((s1 suffix) (list (match-string 1 ,place)
-                                                           (match-string 2 ,place)))
-                                        (suffix (if suffix
-                                                    (string-to-number suffix)
-                                                  0)))
-                                  (setf ,place (format "%s--%s" s1 (cl-incf suffix)))))))
-    (let* ((title (org-element-property :raw-value datum))
-           (ref (url-hexify-string (substring-no-properties title)))
-           (parent (org-element-property :parent datum)))
-      (while (--any (equal ref (car it))
-                    cache)
-        ;; Title not unique: make it so.
-        (if parent
-            ;; Append ancestor title.
-            (setf title (concat (org-element-property :raw-value parent)
-                                "--" title)
-                  ref (url-hexify-string (substring-no-properties title))
-                  parent (org-element-property :parent parent))
-          ;; No more ancestors: add and increment a number.
-          (inc-suffixf ref)))
-      ref)))
-
-(setq ispell-program-name "aspell")
-(setq mac-command-key-is-meta t)
-(setq mac-command-modifier 'meta)
-
-(add-hook 'org-mode-hook 'unpackaged/org-export-html-with-useful-ids-mode)
-(add-hook 'org-mode-hook 'auto-fill-mode)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#2e3436" "#a40000" "#4e9a06" "#c4a000" "#204a87" "#5c3566" "#729fcf" "#eeeeec"])
- '(ansi-term-color-vector
-   [unspecified "#181818" "#ab4642" "#a1b56c" "#f7ca88" "#7cafc2" "#ba8baf" "#7cafc2" "#d8d8d8"])
- '(company-box-enable-icon nil)
- '(custom-enabled-themes (quote (whiteboard)))
- '(custom-safe-themes
-   (quote
-    ("99c86852decaeb0c6f51ce8bd46e4906a4f28ab4c5b201bdc3fdf85b24f88518" "36746ad57649893434c443567cb3831828df33232a7790d232df6f5908263692" "9be1d34d961a40d94ef94d0d08a364c3d27201f3c98c9d38e36f10588469ea57" "3be1f5387122b935a26e02795196bc90860c57a62940f768f138b02383d9a257" "146061a7ceea4ccc75d975a3bb41432382f656c50b9989c7dc1a7bb6952f6eb4" "16dd114a84d0aeccc5ad6fd64752a11ea2e841e3853234f19dc02a7b91f5d661" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" default)))
- '(doom-modeline-mode nil)
- '(lsp-ui-sideline-enable nil)
- '(mood-line-mode t)
- '(org-cycle-hook
-   (quote
-    (org-cycle-hide-archived-subtrees org-cycle-show-empty-lines org-optimize-window-after-visibility-change)))
- '(package-selected-packages
-   (quote
-    (lsp-ivy company-lsp lsp-ui blacken mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel base16-theme)))
- '(unpackaged/org-export-html-with-useful-ids-mode t)
- '(yas-global-mode t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(load custom-file 'noerror)
+(load "org.el")
