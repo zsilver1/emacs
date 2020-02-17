@@ -118,6 +118,12 @@ the current position of point, then move it to the beginning of the line."
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
 
+(if (eq system-type 'darwin)
+    (setq mac-option-key-is-meta nil
+          mac-command-key-is-meta t
+          mac-command-modifier 'meta
+          mac-option-modifier 'none))
+
 ;; PACKAGES
 
 (use-package exec-path-from-shell
