@@ -135,7 +135,6 @@ the current position of point, then move it to the beginning of the line."
   :config
   (which-key-mode))
 
-
 (use-package mood-line
   :config
   (mood-line-mode))
@@ -222,12 +221,6 @@ the current position of point, then move it to the beginning of the line."
   :hook ((python-mode . flycheck-mode)
          (rust-mode . flycheck-mode)))
 
-(use-package company-box
-  :hook (company-mode . company-box-mode))
-
-(use-package all-the-icons-ivy
-  :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
-
 (use-package crux
   :bind
   (("C-c I" . crux-find-user-init-file)
@@ -235,6 +228,15 @@ the current position of point, then move it to the beginning of the line."
    ("C-c R" . crux-rename-file-and-buffer)
    ("C-c t" . crux-visit-term-buffer)
    ("C-c C" . crux-copy-file-preserve-attributes)))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode)
+  :config
+  (setq company-box-enable-icon nil))
+
+(when (display-graphic-p)
+  (use-package all-the-icons-ivy
+    :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup)))
 
 (load custom-file 'noerror)
 (load "org.el")
