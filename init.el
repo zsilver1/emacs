@@ -14,6 +14,18 @@
 
 (setq use-package-always-ensure t)
 
+;; set path
+(add-to-list 'exec-path "~/.local/bin")
+(add-to-list 'exec-path "~/.cargo/bin")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SET DEFAULT CONFIGURATIONS         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; set default python interpreter
+(defconst python-interpreter "python3.7")
+
 ;; disable the title bar text
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 (add-to-list 'default-frame-alist '(ns-appearance . dark))
@@ -54,7 +66,9 @@
 
 ;; Enable line numbers and col numbers
 (global-linum-mode +1)
-; (setq linum-format "%1d \u2502")
+(setq linum-format "%4d ")
+(add-hook 'term-mode-hook (lambda () (linum-mode 0)))
+(add-hook 'shell-mode-hook (lambda () (linum-mode 0)))
 (setq column-number-mode t)
 
 ;; Isearch convenience, space matches anything (non-greedy)
@@ -92,27 +106,46 @@
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
 (setq org-hide-leading-stars t)
+(add-hook 'org-mode-hook 'auto-fill-mode)
 
-;; KEYBINDINGS
 (global-set-key (kbd "C-u") 'undo)
 (global-unset-key (kbd "C-x u"))
 (global-set-key (kbd "M-i") 'dabbrev-expand)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; CUSTOM ELISP FUNCTIONS             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun zs/term ()
   (interactive)
   (ansi-term (getenv "SHELL")))
 (global-set-key (kbd "M-t") 'zs/term)
 
+(defun zs/save-position ()
+  (interactive)
+  (message "Saving position...")
+  (set-register 49 (point-marker)))
+
+(defun zs/goto-position ()
+  (interactive)
+  (jump-to-register 49))
+
+(global-set-key (kbd "C-c .") 'zs/save-position)
+(global-set-key (kbd "C-c ,") 'zs/goto-position)
+
 (if (eq system-type 'darwin)
     (setq mac-option-key-is-meta nil
           mac-command-key-is-meta t
           mac-command-modifier 'meta
-          mac-option-modifier 'none))
+          mac-option-modifier 'none
+          ispell-program-name "aspell"))
 
 
-;; PACKAGES
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; PACKAGES                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
   :config
@@ -122,14 +155,18 @@
   :config
   (which-key-mode))
 
-(use-package mood-line
+(use-package doom-modeline
+  :if (display-graphic-p)
+  :init (doom-modeline-mode 1)
   :config
-  (mood-line-mode))
+  (setq doom-modeline-buffer-file-name-style 'buffer-name)
+  (setq doom-modeline-vcs-max-length 20))
 
 (use-package expand-region
   :bind ("C-j" . er/expand-region)
   :config
   (setq shift-select-mode nil)
+  (setq expand-region-fast-keys-enabled nil)
   (define-key org-mode-map "\C-j" 'er/expand-region))
 
 (use-package doom-themes
@@ -161,14 +198,14 @@
   :config
   (ivy-mode 1)
   (add-hook 'org-mode-hook
-  (lambda ()
-    (define-key org-mode-map "\C-s" 'swiper)))
+            (lambda ()
+              (define-key org-mode-map "\C-s" 'swiper)))
   (setq ivy-use-virtual-buffers t)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil)
   (setq ivy-sort-matches-functions-alist
-      '((t)
-        (counsel-find-file . ivy--sort-files-by-date))))
+        '((t)
+          (counsel-find-file . ivy--sort-files-by-date))))
 
 (use-package company
   :hook (prog-mode . company-mode)
@@ -183,34 +220,41 @@
            company-dabbrev)
           ))
   (setq company-idle-delay 0.2)
-  )
+  (setq company-dabbrev-downcase nil))
 
 (use-package lsp-mode
-  :init (setq lsp-keymap-prefix "C-c l")
-  :bind (("M-." . lsp-find-definition)
-         ("M-?" . lsp-find-references))
-  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-         (python-mode . lsp)
-         (rust-mode . lsp)
-         ;; if you want which-key integration
-         ;; (lsp-mode . lsp-enable-which-key-integration)
-         )
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :bind (("C-c C-h" . lsp-describe-thing-at-point))
+  :hook ((rust-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp
   :config
   (setq lsp-prefer-flymake nil)
-  (setq lsp-signature-render-documentation nil))
+  (setq lsp-signature-render-documentation nil)
+  (setq lsp-enable-snippet nil))
 
 (use-package lsp-ui :commands lsp-ui-mode
   :config
   (setq lsp-ui-sideline-enable t)
   (setq lsp-ui-doc-enable nil))
 
-(use-package company-lsp :commands company-lsp)
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package company-lsp :commands company-lsp
+  :config
+  (setq company-lsp-enable-snippet nil))
 
 (use-package flycheck
+  :bind (("C-c C-n" . flycheck-next-error)
+         ("C-c C-p" . flycheck-previous-error))
   :hook ((python-mode . flycheck-mode)
-         (rust-mode . flycheck-mode)))
+         (rust-mode . flycheck-mode)
+         (json-mode . flycheck-mode))
+  :config
+  (setq flycheck-python-flake8-executable python-interpreter))
+
+(use-package dumb-jump
+  :config
+  (setq dumb-jump-selector 'ivy))
 
 (use-package crux
   :bind
@@ -226,14 +270,80 @@
   :config
   (global-undo-tree-mode))
 
-(use-package company-box
-  :hook (company-mode . company-box-mode)
-  :config
-  (setq company-box-enable-icon nil))
-
 (use-package all-the-icons-ivy
   :if (display-graphic-p)
   :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
+
+(use-package smex
+  :config
+  (smex-initialize))
+
+(use-package shell-pop
+  :bind (("C-t" . shell-pop))
+  :config
+  (setq shell-pop-shell-type (quote ("ansi-term" "*shell-pop-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  ;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+  (require 'term)
+  (defun expose-global-binding-in-term (binding)
+    (define-key term-raw-map binding
+      (lookup-key (current-global-map) binding)))
+  (expose-global-binding-in-term (kbd "C-t")))
+
+(use-package magit)
+
+(use-package projectile)
+
+(use-package simpleclip
+  :unless (memq window-system '(mac ns))
+  :config
+  (setq interprogram-cut-function 'simpleclip-set-contents)
+  (simpleclip-mode 1)
+  ;;; NOTE: PATCHED simpleclip-paste
+  ;;; TO REMOVE * from interactive
+  )
+
+(use-package yasnippet)
+
+(use-package smart-jump
+  :bind (("M-?" . xref-find-references))
+  :config
+  (smart-jump-setup-default-registers)
+  (global-set-key (kbd "M-?") 'xref-find-references))
+
+(use-package markdown-mode
+  :config
+  (add-hook 'markdown-mode-hook 'flyspell-mode))
+
+(use-package dtrt-indent
+  :hook (prog-mode . dtrt-indent-mode))
+
+(use-package groovy-mode)
+
+(use-package worf
+  :config
+  ;; use ivy to insert a link to a heading in the current document
+  ;; based on `worf-goto`
+  (defun zs/worf-insert-internal-link ()
+    "Use ivy to insert a link to a heading in the current `org-mode' document. Code is based on `worf-goto'."
+    (interactive)
+    (let ((cands (worf--goto-candidates)))
+      (ivy-read "Heading: " cands
+                :action 'zs/worf-insert-internal-link-action)))
+  (defun zs/worf-insert-internal-link-action (x)
+    "Insert link for `zs/worf-insert-internal-link'"
+    ;; go to heading
+    (save-excursion
+      (goto-char (cdr x))
+      ;; store link
+      (call-interactively 'org-store-link)
+      )
+    ;; return to original point and insert link
+    (org-insert-last-stored-link 1)
+    ;; org-insert-last-stored-link adds a newline so delete this
+    (delete-backward-char 1)
+    )
+  (define-key org-mode-map (kbd "C-c C-l") 'zs/worf-insert-internal-link))
 
 (load custom-file 'noerror)
 (load "org.el")
