@@ -7,6 +7,8 @@
 
 (setq custom-file "~/.emacs.d/custom.el")
 
+(server-start)
+(require 'org)
 ;; Set up use package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -23,7 +25,7 @@
 ;; Ask "y" or "n" instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-default-font "Jetbrains Mono 15" nil t)
+(set-default-font "Consolas 19" nil t)
 ;; get rid of right fringe
 (set-face-attribute 'fringe nil :background nil)
 
@@ -105,6 +107,7 @@
   (ansi-term (getenv "SHELL")))
 (global-set-key (kbd "M-t") 'zs/term)
 
+
 (if (eq system-type 'darwin)
     (setq mac-option-key-is-meta nil
           mac-command-key-is-meta t
@@ -130,7 +133,8 @@
   :bind ("C-j" . er/expand-region)
   :config
   (setq shift-select-mode nil)
-  (define-key org-mode-map "\C-j" 'er/expand-region))
+  (define-key org-mode-map "\C-j" 'er/expand-region)
+  (define-key latex-mode-map "\C-j" 'er/expand-region))
 
 (use-package doom-themes
   :if (display-graphic-p)
@@ -191,7 +195,6 @@
          ("M-?" . lsp-find-references))
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
          (python-mode . lsp)
-         (rust-mode . lsp)
          ;; if you want which-key integration
          ;; (lsp-mode . lsp-enable-which-key-integration)
          )
@@ -235,5 +238,19 @@
   :if (display-graphic-p)
   :init (add-hook 'after-init-hook 'all-the-icons-ivy-setup))
 
+(use-package rustic
+  :config
+  (setq rustic-lsp-server 'rust-analyzer))
+
+(defun zs/tex-compile-and-open ()
+  (interactive)
+  (let ((buf (buffer-file-name))
+        (pdf (file-name-sans-extension (buffer-file-name))))
+    (call-process-shell-command (concat "xelatex " buf "; open " pdf ".pdf"))))
+
+(eval-after-load 'latex
+  '(define-key LaTeX-mode-map (kbd "C-c C-e") zs/tex-compile-and-open))
+
+
 (load custom-file 'noerror)
-(load "org.el")
+(load "personal.el")

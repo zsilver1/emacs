@@ -17,7 +17,7 @@
     (org-cycle-hide-archived-subtrees org-cycle-show-empty-lines org-optimize-window-after-visibility-change)))
  '(package-selected-packages
    (quote
-    (shell-pop doom-modeline doom-themes all-the-icons-ivy all-the-icons lsp-ivy company-lsp lsp-ui blacken mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel)))
+    (rustic toml-mode org-journal yaml-mode web-beautify web-mode emmet-mode org ox-twbs shell-pop doom-modeline doom-themes all-the-icons-ivy all-the-icons lsp-ivy company-lsp lsp-ui blacken mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel)))
  '(pdf-view-midnight-colors (cons "#f9f9f9" "#282a36"))
  '(rustic-ansi-faces
    ["#282a36" "#ff5c57" "#5af78e" "#f3f99d" "#57c7ff" "#ff6ac1" "#9aedfe" "#f9f9f9"])
