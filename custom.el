@@ -15,9 +15,16 @@
  '(org-cycle-hook
    (quote
     (org-cycle-hide-archived-subtrees org-cycle-show-empty-lines org-optimize-window-after-visibility-change)))
+ '(org-journal-dir "~/Dropbox/Journal/")
+ '(org-journal-file-format "%Y/%Y-%m.org")
+ '(org-journal-file-type "monthly")
+ '(org-journal-find-file (quote find-file))
+ '(org-journal-search-results-order-by :desc)
+ '(org-journal-time-format "%l:%M %p")
+ '(org-journal-time-prefix "**")
  '(package-selected-packages
    (quote
-    (org-journal ox-twbs rustic xterm-color groovy-mode magit shell-pop doom-modeline doom-themes all-the-icons-ivy all-the-icons lsp-ivy company-lsp lsp-ui blacken mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel)))
+    (simpleclip org-journal ox-twbs rustic xterm-color groovy-mode magit shell-pop doom-modeline doom-themes all-the-icons-ivy all-the-icons lsp-ivy company-lsp lsp-ui blacken mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido expand-region exec-path-from-shell esup counsel)))
  '(pdf-view-midnight-colors (cons "#383a42" "#fafafa"))
  '(rustic-ansi-faces
    ["#fafafa" "#e45649" "#50a14f" "#986801" "#4078f2" "#a626a4" "#0184bc" "#383a42"])
