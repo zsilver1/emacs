@@ -174,7 +174,7 @@
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-one-light t))
+  (load-theme 'doom-one t))
 
 ;; if above themes not used
 (unless (display-graphic-p)
@@ -227,6 +227,7 @@
   (setq lsp-keymap-prefix "C-c l")
   :bind (("C-c C-h" . lsp-describe-thing-at-point))
   :hook ((rust-mode . lsp)
+         (python-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp
   :config
