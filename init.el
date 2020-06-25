@@ -136,11 +136,13 @@
 (global-set-key (kbd "C-c ,") 'zs/goto-position)
 
 (if (eq system-type 'darwin)
-    (setq mac-option-key-is-meta nil
-          mac-command-key-is-meta t
-          mac-command-modifier 'meta
-          mac-option-modifier 'none
-          ispell-program-name "aspell"))
+    (progn
+      (setq mac-option-key-is-meta nil
+            mac-command-key-is-meta t
+            mac-command-modifier 'meta
+            mac-option-modifier 'none
+            ispell-program-name "aspell")
+      (load "~/.emacs.d/personal.el" 'noerror)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -347,4 +349,3 @@
   (define-key org-mode-map (kbd "C-c C-l") 'zs/worf-insert-internal-link))
 
 (load custom-file 'noerror)
-(load "~/.emacs.d/personal.el" 'noerror)
