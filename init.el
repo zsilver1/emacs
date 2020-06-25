@@ -346,4 +346,3 @@
   (define-key org-mode-map (kbd "C-c C-l") 'zs/worf-insert-internal-link))
 
 (load custom-file 'noerror)
-(load "org.el")
