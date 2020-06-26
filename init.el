@@ -102,6 +102,9 @@
 ;; Electric Pair mode
 (electric-pair-mode 1)
 
+;; fix mouse behavior
+(setq mouse-yank-at-point t)
+
 ;; Make org mode source code syntax highlighted
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
@@ -134,6 +137,18 @@
 
 (global-set-key (kbd "C-c .") 'zs/save-position)
 (global-set-key (kbd "C-c ,") 'zs/goto-position)
+
+(defun zs/delete-indentation-or-word ()
+  (interactive)
+  (if (looking-back "^\\s-*")
+      (delete-horizontal-space)
+    (backward-kill-word 1)))
+
+(global-set-key (kbd "C-<backspace>") 'zs/delete-indentation-or-word)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; MAC SPECIFIC (PERSONAL) SETTINGS   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (if (eq system-type 'darwin)
     (progn
@@ -320,6 +335,13 @@
 
 (use-package dtrt-indent
   :hook (prog-mode . dtrt-indent-mode))
+
+(use-package bm
+  :bind (("C-c ," . bm-next)
+         ("C-c ." . bm-toggle))
+  :config
+  (setq bm-highlight-style 'bm-highlight-only-fringe)
+  (setq bm-in-lifo-order t))
 
 (use-package groovy-mode)
 
