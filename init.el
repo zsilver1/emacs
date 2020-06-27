@@ -250,7 +250,8 @@
   :config
   (setq lsp-prefer-flymake nil)
   (setq lsp-signature-render-documentation nil)
-  (setq lsp-enable-snippet nil))
+  (setq lsp-enable-snippet nil)
+  (setq lsp-prefer-capf t))
 
 (use-package lsp-ui :commands lsp-ui-mode
   :config
@@ -320,10 +321,8 @@
 (use-package yasnippet)
 
 (use-package smart-jump
-  :bind (("M-?" . xref-find-references))
   :config
-  (smart-jump-setup-default-registers)
-  (global-set-key (kbd "M-?") 'xref-find-references))
+  (smart-jump-setup-default-registers))
 
 (use-package markdown-mode
   :config
