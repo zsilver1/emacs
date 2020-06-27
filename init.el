@@ -257,10 +257,6 @@
   (setq lsp-ui-sideline-enable t)
   (setq lsp-ui-doc-enable nil))
 
-(use-package company-lsp :commands company-lsp
-  :config
-  (setq company-lsp-enable-snippet nil))
-
 (use-package flycheck
   :bind (("C-c C-n" . flycheck-next-error)
          ("C-c C-p" . flycheck-previous-error))
