@@ -208,7 +208,7 @@
          ("s-x" . counsel-M-x)
          ("C-x b" . ivy-switch-buffer)
          ("C-x C-f" . counsel-find-file)
-         ("C-c r" . counsel-recentf)
+         ("C-c r" . counsel-buffer-or-recentf)
          (:map counsel-find-file-map
                ("RET" . ivy-alt-done)
                ("C-j" . ivy-immediate-done)))
