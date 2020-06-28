@@ -141,7 +141,7 @@
 (defun zs/delete-indentation-or-word ()
   (interactive)
   (if (looking-back "^\\s-*")
-      (delete-horizontal-space)
+      (delete-indentation)
     (backward-kill-word 1)))
 
 (global-set-key (kbd "C-<backspace>") 'zs/delete-indentation-or-word)
@@ -277,7 +277,8 @@
    ("C-c I" . crux-find-user-init-file)
    ("C-c D" . crux-delete-file-and-buffer)
    ("C-c R" . crux-rename-file-and-buffer)
-   ("C-c C" . crux-copy-file-preserve-attributes)))
+   ("C-c C" . crux-copy-file-preserve-attributes)
+   ("C-k" . crux-smart-kill-line)))
 
 (use-package undo-tree
   :bind (("C-u" . undo-tree-undo)
