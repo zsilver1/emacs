@@ -138,13 +138,18 @@
 (global-set-key (kbd "C-c .") 'zs/save-position)
 (global-set-key (kbd "C-c ,") 'zs/goto-position)
 
-(defun zs/delete-indentation-or-word ()
+(defun zs/delete-space-or-word ()
   (interactive)
-  (if (looking-back "^\\s-*")
-      (delete-indentation)
-    (backward-kill-word 1)))
+  (cond
+   ((= (point) (line-beginning-position))
+    (delete-indentation))
+   ((looking-back "\\s-\\s-+")
+    (delete-horizontal-space))
+   (t
+    (backward-kill-word 1))
+   ))
 
-(global-set-key (kbd "C-<backspace>") 'zs/delete-indentation-or-word)
+(global-set-key (kbd "C-<backspace>") 'zs/delete-space-or-word)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MAC SPECIFIC (PERSONAL) SETTINGS   ;;
