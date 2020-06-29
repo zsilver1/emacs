@@ -24,7 +24,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; set default python interpreter
-(defconst python-interpreter "python3.7")
+(defconst python-interpreter "python3")
 
 ;; disable the title bar text
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
@@ -183,7 +183,8 @@
   :init (doom-modeline-mode 1)
   :config
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
-  (setq doom-modeline-vcs-max-length 20))
+  (setq doom-modeline-vcs-max-length 20)
+  (setq doom-modeline-env-python-executable python-interpreter))
 
 (use-package expand-region
   :bind ("C-j" . er/expand-region)
