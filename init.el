@@ -116,6 +116,7 @@
 (global-set-key (kbd "M-i") 'dabbrev-expand)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
+(global-set-key (kbd "C-*") 'universal-argument)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM ELISP FUNCTIONS             ;;
