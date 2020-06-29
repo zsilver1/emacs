@@ -35,7 +35,7 @@
 ;; Ask "y" or "n" instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-default-font "Jetbrains Mono 15" nil t)
+(set-default-font "Jetbrains Mono 14" nil t)
 ;; get rid of right fringe
 (set-face-attribute 'fringe nil :background nil)
 
@@ -162,7 +162,8 @@
             mac-command-modifier 'meta
             mac-option-modifier 'none
             ispell-program-name "aspell")
-      (load "~/.emacs.d/personal.el" 'noerror)))
+      (load "~/.emacs.d/personal.el" 'noerror)
+      (set-default-font "Jetbrains Mono 15" nil t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
