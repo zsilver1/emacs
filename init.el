@@ -24,7 +24,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; set default python interpreter
-(defconst python-interpreter "python3")
+(defconst python-interpreter "python3.8")
 
 ;; disable the title bar text
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
