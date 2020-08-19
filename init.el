@@ -1,7 +1,6 @@
 ;; Set up package management
 (require 'package)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
 
@@ -35,7 +34,7 @@
 ;; Ask "y" or "n" instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-default-font "Jetbrains Mono 14" nil t)
+(set-frame-font "Jetbrains Mono 15" nil t)
 ;; get rid of right fringe
 (set-face-attribute 'fringe nil :background nil)
 
@@ -164,7 +163,7 @@
             mac-option-modifier 'none
             ispell-program-name "aspell")
       (load "~/.emacs.d/personal.el" 'noerror)
-      (set-default-font "Jetbrains Mono 15" nil t)))
+      (set-frame-font "Jetbrains Mono 15" nil t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -199,7 +198,7 @@
   :config
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-one t))
+  (load-theme 'doom-vibrant t))
 
 ;; if above themes not used
 (unless (display-graphic-p)
