@@ -22,6 +22,9 @@
 ;; SET DEFAULT CONFIGURATIONS         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; set boolean to check if we're on the personal computer, or the bloomberg computer
+(setq is-personal-computer (if (string-equal (getenv "USER") "zsilver4") nil t))
+
 ;; set default python interpreter
 (defconst python-interpreter "python3.8")
 
@@ -134,9 +137,6 @@
 (defun zs/goto-position ()
   (interactive)
   (jump-to-register 49))
-
-(global-set-key (kbd "C-c .") 'zs/save-position)
-(global-set-key (kbd "C-c ,") 'zs/goto-position)
 
 (defun zs/delete-space-or-word ()
   (interactive)
@@ -315,7 +315,19 @@
 
 (use-package magit)
 
-(use-package projectile)
+(use-package projectile
+  :config
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+  (setq projectile-completion-system 'ivy)
+
+  (setq projectile-sort-order 'recently-active)
+
+  ;; set project search path based on which computer we are on
+  (if is-personal-computer
+      (setq projectile-project-search-path '("/Documents/Programming/"))
+    (setq projectile-project-search-path '("~/")))
+  )
 
 (use-package simpleclip
   :unless (memq window-system '(mac ns))
@@ -326,7 +338,7 @@
   ;;; TO REMOVE * from interactive
   )
 
-(use-package yasnippet)
+;; (use-package yasnippet)
 
 (use-package smart-jump
   :config
