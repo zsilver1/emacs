@@ -152,7 +152,7 @@
 (global-set-key (kbd "C-<backspace>") 'zs/delete-space-or-word)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; MAC SPECIFIC (PERSONAL) SETTINGS   ;;
+;; MAC SPECIFIC SETTINGS   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (if (eq system-type 'darwin)
@@ -162,7 +162,6 @@
             mac-command-modifier 'meta
             mac-option-modifier 'none
             ispell-program-name "aspell")
-      (load "~/.emacs.d/personal.el" 'noerror)
       (set-frame-font "Jetbrains Mono 15" nil t)))
 
 
@@ -386,6 +385,7 @@
   (define-key org-mode-map (kbd "C-c C-l") 'zs/worf-insert-internal-link))
 
 (load custom-file 'noerror)
+(when is-personal-computer (load "~/.emacs.d/personal.el" 'noerror))
 
 ;; start server
 (server-start)
