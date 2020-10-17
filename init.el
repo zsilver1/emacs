@@ -28,6 +28,12 @@
 ;; set default python interpreter
 (defconst python-interpreter "python3.8")
 
+;; Increase gc-cons-threshold to improve performance
+(setq gc-cons-threshold 10000000)
+
+;; Increase the amount of data emacs can read from a process
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+
 ;; disable the title bar text
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 (add-to-list 'default-frame-alist '(ns-appearance . dark))
@@ -183,7 +189,8 @@
   :config
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
   (setq doom-modeline-vcs-max-length 20)
-  (setq doom-modeline-env-python-executable python-interpreter))
+  (setq doom-modeline-env-enable-python nil)
+  (setq doom-modeline-checker-simple-format nil))
 
 (use-package expand-region
   :bind ("C-j" . er/expand-region)
@@ -257,7 +264,9 @@
   (setq lsp-prefer-flymake nil)
   (setq lsp-signature-render-documentation nil)
   (setq lsp-enable-snippet nil)
-  (setq lsp-prefer-capf t))
+  (setq lsp-completion-provider :capf)
+  (setq lsp-modeline-diagnostics-enable nil)
+  )
 
 (use-package lsp-ui :commands lsp-ui-mode
   :config
