@@ -31,6 +31,7 @@
 
 ;; set default python interpreter
 (defconst python-interpreter "python3.8")
+(setq python-shell-interpreter python-interpreter)
 
 ;; Increase gc-cons-threshold to improve performance
 (setq gc-cons-threshold 10000000)
@@ -172,7 +173,8 @@
             mac-command-modifier 'meta
             mac-option-modifier 'none
             ispell-program-name "aspell")
-      (set-frame-font "Jetbrains Mono 15" nil t)))
+      (set-frame-font "Jetbrains Mono 15" nil t)
+      (menu-bar-mode t)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -250,7 +252,7 @@
            company-capf
            company-dabbrev)
           ))
-  (setq company-idle-delay 0.2)
+  (setq company-idle-delay 0.1)
   (setq company-dabbrev-downcase nil))
 
 (use-package lsp-mode
@@ -258,16 +260,18 @@
   (setq lsp-keymap-prefix "C-c l")
   :bind (("C-c C-h" . lsp-describe-thing-at-point))
   :hook ((rust-mode . lsp)
-         (python-mode . lsp)
+         (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp)))
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp
   :config
+
   (setq lsp-prefer-flymake nil)
   (setq lsp-signature-render-documentation nil)
   (setq lsp-enable-snippet nil)
   (setq lsp-completion-provider :capf)
-  (setq lsp-modeline-diagnostics-enable nil)
-  )
+  (setq lsp-modeline-diagnostics-enable nil))
 
 (use-package lsp-ui :commands lsp-ui-mode
   :config
@@ -279,9 +283,10 @@
          ("C-c C-p" . flycheck-previous-error))
   :hook ((python-mode . flycheck-mode)
          (rust-mode . flycheck-mode)
-         (json-mode . flycheck-mode))
-  :config
-  (setq flycheck-python-flake8-executable python-interpreter))
+         (json-mode . flycheck-mode)))
+
+(use-package pyenv-mode
+  :hook (python-mode . pyenv-mode))
 
 (use-package dumb-jump
   :config
