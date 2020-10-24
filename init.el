@@ -17,6 +17,10 @@
 (add-to-list 'exec-path "~/.local/bin")
 (add-to-list 'exec-path "~/.cargo/bin")
 
+;; set default directory
+(setq default-directory "~/")
+(setq command-line-default-directory "~/")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SET DEFAULT CONFIGURATIONS         ;;
@@ -193,11 +197,11 @@
   (setq doom-modeline-checker-simple-format nil))
 
 (use-package expand-region
-  :bind ("C-j" . er/expand-region)
+  :init
+  (bind-key* "C-j" 'er/expand-region)
   :config
   (setq shift-select-mode nil)
-  (setq expand-region-fast-keys-enabled nil)
-  (define-key org-mode-map "\C-j" 'er/expand-region))
+  (setq expand-region-fast-keys-enabled nil))
 
 (use-package doom-themes
   :if (display-graphic-p)
@@ -227,9 +231,6 @@
                ("C-j" . ivy-immediate-done)))
   :config
   (ivy-mode 1)
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (define-key org-mode-map "\C-s" 'swiper)))
   (setq ivy-use-virtual-buffers t)
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-extra-directories nil)
@@ -324,18 +325,17 @@
 (use-package magit)
 
 (use-package projectile
+  :bind-keymap
+  ("M-p" . projectile-command-map)
   :config
   (projectile-mode +1)
-  (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
   (setq projectile-completion-system 'ivy)
-
   (setq projectile-sort-order 'recently-active)
 
   ;; set project search path based on which computer we are on
   (if is-personal-computer
-      (setq projectile-project-search-path '("/Documents/Programming/"))
-    (setq projectile-project-search-path '("~/")))
-  )
+      (setq projectile-project-search-path '("~/Documents/Programming/"))
+    (setq projectile-project-search-path '("~/"))))
 
 (use-package simpleclip
   :unless (memq window-system '(mac ns))
