@@ -135,6 +135,11 @@
 ;; CUSTOM ELISP FUNCTIONS             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun expose-global-binding-in-term (binding)
+    (define-key term-raw-map binding
+      (lookup-key (current-global-map) binding)))
+(expose-global-binding-in-term (kbd "M-x"))
+
 (defun zs/term ()
   (interactive)
   (ansi-term (getenv "SHELL")))
@@ -322,9 +327,6 @@
   ;; need to do this manually or not picked up by `shell-pop'
   (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
   (require 'term)
-  (defun expose-global-binding-in-term (binding)
-    (define-key term-raw-map binding
-      (lookup-key (current-global-map) binding)))
   (expose-global-binding-in-term (kbd "C-t")))
 
 (use-package magit)
