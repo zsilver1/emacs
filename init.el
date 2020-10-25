@@ -138,7 +138,8 @@
 (defun expose-global-binding-in-term (binding)
     (define-key term-raw-map binding
       (lookup-key (current-global-map) binding)))
-(expose-global-binding-in-term (kbd "M-x"))
+(eval-after-load "ansi-term"
+  '(expose-global-binding-in-term (kbd "M-x")))
 
 (defun zs/term ()
   (interactive)
@@ -374,6 +375,11 @@
   (setq bm-in-lifo-order t))
 
 (use-package groovy-mode)
+
+(use-package helpful
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)))
 
 (use-package worf
   :config
