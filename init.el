@@ -302,8 +302,8 @@
          (rust-mode . flycheck-mode)
          (json-mode . flycheck-mode)))
 
-(use-package pyenv-mode
-  :hook (python-mode . pyenv-mode))
+;; (use-package pyenv-mode
+;;   :hook (python-mode . pyenv-mode))
 
 (use-package dumb-jump
   :config
@@ -332,16 +332,19 @@
   :config
   (smex-initialize))
 
-(use-package shell-pop
-  :bind (("C-t" . shell-pop))
-  :config
-  (setq shell-pop-shell-type (quote ("ansi-term" "*shell-pop-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-  ;; need to do this manually or not picked up by `shell-pop'
-  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
-  (require 'term)
-  (expose-global-binding-in-term (kbd "C-t")))
+;; (use-package shell-pop
+;;   :bind (("C-t" . shell-pop))
+;;   :config
+;;   (setq shell-pop-shell-type (quote ("ansi-term" "*shell-pop-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+;;   ;; need to do this manually or not picked up by `shell-pop'
+;;   (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+;;   (require 'term)
+;;   (expose-global-binding-in-term (kbd "C-t")))
 
-(use-package magit)
+(use-package magit
+  :bind ("C-x g" . magit-status)
+  :config
+  (setq magit-no-confirm '(stage-all-changes unstage-all-changes)))
 
 (use-package projectile
   :bind-keymap
@@ -355,17 +358,6 @@
   (if is-personal-computer
       (setq projectile-project-search-path '("~/Documents/Programming/"))
     (setq projectile-project-search-path '("~/"))))
-
-(use-package simpleclip
-  :unless (memq window-system '(mac ns))
-  :config
-  (setq interprogram-cut-function 'simpleclip-set-contents)
-  (simpleclip-mode 1)
-  ;;; NOTE: PATCHED simpleclip-paste
-  ;;; TO REMOVE * from interactive
-  )
-
-;; (use-package yasnippet)
 
 (use-package smart-jump
   :config
@@ -397,7 +389,8 @@
     (vterm-copy-mode 0))
   :bind (("M-t" . vterm)
          (:map vterm-mode-map
-               ("C-c C-j" . vterm-copy-mode-enable))
+               ("C-c C-j" . vterm-copy-mode-enable)
+               ("<S-insert>" . vterm-yank-primary))
          (:map vterm-copy-mode-map
                ("C-c C-k" . vterm-copy-mode-disable)
                ("RET" . vterm-copy-mode-disable)
@@ -442,6 +435,7 @@
 
 (load custom-file 'noerror)
 (when is-personal-computer (load "~/.emacs.d/personal.el" 'noerror))
+(unless is-personal-computer (load "~/.emacs.d/work.el" 'noerror))
 
 ;; start server
 (server-start)
