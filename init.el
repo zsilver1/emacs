@@ -411,6 +411,10 @@
          ("C-h v" . helpful-variable)
          ("C-h k" . helpful-key)))
 
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
 (use-package worf
   :config
   ;; use ivy to insert a link to a heading in the current document
