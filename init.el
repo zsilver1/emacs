@@ -278,9 +278,7 @@
   (setq lsp-keymap-prefix "C-c l")
   :bind (("C-c C-h" . lsp-describe-thing-at-point))
   :hook ((rust-mode . lsp)
-         (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp)))
+         (python-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp
   :config
