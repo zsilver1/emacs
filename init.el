@@ -172,7 +172,7 @@
 ;; MAC SPECIFIC SETTINGS   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(if (eq system-type 'darwin)
+(when (eq system-type 'darwin)
     (progn
       (setq mac-option-key-is-meta nil
             mac-command-key-is-meta t
@@ -182,6 +182,17 @@
       (set-frame-font "Jetbrains Mono 15" nil t)
       (menu-bar-mode t)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; WINDOWS (WSL) SPECIFIC SETTINGS    ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Set up browser to open in windows
+(when (string-match "-[Mm]icrosoft" operating-system-release)
+  (setq
+   browse-url-generic-program  "cmd.exe"
+   browse-url-generic-args     '("/c" "start")
+   browse-url-browser-function #'browse-url-generic))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PACKAGES                           ;;
@@ -234,6 +245,7 @@
          ("C-x b" . ivy-switch-buffer)
          ("C-x C-f" . counsel-find-file)
          ("C-c r" . counsel-buffer-or-recentf)
+         ("C-c y" . counsel-yank-pop)
          (:map counsel-find-file-map
                ("RET" . ivy-alt-done)
                ("C-j" . ivy-immediate-done)))
@@ -277,7 +289,8 @@
   (setq lsp-signature-render-documentation nil)
   (setq lsp-enable-snippet nil)
   (setq lsp-completion-provider :capf)
-  (setq lsp-modeline-diagnostics-enable nil))
+  (setq lsp-modeline-diagnostics-enable nil)
+  (setq lsp-headerline-breadcrumb-enable t))
 
 (use-package lsp-ui :commands lsp-ui-mode
   :config
