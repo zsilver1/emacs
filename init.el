@@ -144,7 +144,7 @@
 (defun zs/term ()
   (interactive)
   (ansi-term (getenv "SHELL")))
-(global-set-key (kbd "M-t") 'zs/term)
+;; (global-set-key (kbd "M-t") 'zs/term)
 
 (defun zs/save-position ()
   (interactive)
@@ -375,6 +375,25 @@
   (setq bm-in-lifo-order t))
 
 (use-package groovy-mode)
+
+(use-package vterm
+  :init
+  (defun vterm-copy-mode-enable ()
+    (interactive)
+    (vterm-copy-mode 1))
+  (defun vterm-copy-mode-disable ()
+    (interactive)
+    (vterm-copy-mode 0))
+  :bind (("M-t" . vterm)
+         (:map vterm-mode-map
+               ("C-c C-j" . vterm-copy-mode-enable))
+         (:map vterm-copy-mode-map
+               ("C-c C-k" . vterm-copy-mode-disable)
+               ("RET" . vterm-copy-mode-disable)
+               ("<return>" . vterm-copy-mode-disable)))
+  :config
+  (add-hook 'vterm-mode-hook (lambda () (linum-mode 0)))
+  (setq vterm-buffer-name-string "vterm %s"))
 
 (use-package helpful
   :bind (("C-h f" . helpful-callable)
