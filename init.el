@@ -333,14 +333,14 @@
   :config
   (smex-initialize))
 
-;; (use-package shell-pop
-;;   :bind (("C-t" . shell-pop))
-;;   :config
-;;   (setq shell-pop-shell-type (quote ("ansi-term" "*shell-pop-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-;;   ;; need to do this manually or not picked up by `shell-pop'
-;;   (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
-;;   (require 'term)
-;;   (expose-global-binding-in-term (kbd "C-t")))
+(use-package shell-pop
+  :bind (("C-t" . shell-pop))
+  :config
+  (setq shell-pop-shell-type (quote ("ansi-term" "*shell-pop-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  ;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+  (require 'term)
+  (expose-global-binding-in-term (kbd "C-t")))
 
 (use-package magit
   :bind ("C-x g" . magit-status)
