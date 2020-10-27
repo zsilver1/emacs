@@ -197,6 +197,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PACKAGES                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
   :config
@@ -248,7 +249,7 @@
          ("C-c y" . counsel-yank-pop)
          (:map counsel-find-file-map
                ("RET" . ivy-alt-done)
-               ("C-j" . ivy-immediate-done)))
+               ("C-d" . ivy-done)))
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffers t)
