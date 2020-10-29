@@ -26,8 +26,10 @@
 ;; SET DEFAULT CONFIGURATIONS         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; set boolean to check if we're on the personal computer, or the bloomberg computer
-(setq is-personal-computer (if (string-equal (getenv "USER") "zsilver4") nil t))
+;; set boolean to check if we're on the personal computer, or the work computer
+(defconst is-personal-computer (if (string-equal (getenv "USER") "zsilver4") nil t))
+
+(defconst is-mac (eq system-type 'darwin))
 
 ;; set default python interpreter
 (defconst python-interpreter "python3.8")
@@ -172,7 +174,7 @@
 ;; MAC SPECIFIC SETTINGS   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(when (eq system-type 'darwin)
+(when is-mac
     (progn
       (setq mac-option-key-is-meta nil
             mac-command-key-is-meta t
@@ -207,12 +209,13 @@
   (add-hook 'dired-mode-hook 'dired-omit-mode)
   
   ;; rebind omit mode to something more useful
-  (bind-key "M-o" 'toggle-global-dired-omit-mode 'dired-mode-map)
+  (bind-key "M-o" 'dired-omit-mode 'dired-mode-map)
   (bind-key "DEL" 'dired-up-directory 'dired-mode-map)
+
+  (when is-mac (setq insert-directory-program "gls"))
 
   ;; show directories first
   (setq dired-listing-switches "-alhF --group-directories-first")
-
   ;; ignore dotfiles by default
   (setq dired-omit-files "^\\\.\\|\\`[.]?#\\|\\`[.][.]?\\'"))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -220,7 +223,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package exec-path-from-shell
-  :if (memq window-system '(mac ns))
+  :if is-mac
   :config
   (exec-path-from-shell-initialize))
 
