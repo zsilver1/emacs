@@ -194,6 +194,27 @@
    browse-url-generic-args     '("/c" "start")
    browse-url-browser-function #'browse-url-generic))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DIRED                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(bind-key* "C-x C-j" 'dired-jump)
+
+(with-eval-after-load 'dired
+
+  ;; by default, omit hidden files
+  (add-hook 'dired-mode-hook 'dired-omit-mode)
+  
+  ;; rebind omit mode to something more useful
+  (bind-key "M-o" 'toggle-global-dired-omit-mode 'dired-mode-map)
+  (bind-key "DEL" 'dired-up-directory 'dired-mode-map)
+
+  ;; show directories first
+  (setq dired-listing-switches "-alhF --group-directories-first")
+
+  ;; ignore dotfiles by default
+  (setq dired-omit-files "^\\\.\\|\\`[.]?#\\|\\`[.][.]?\\'"))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PACKAGES                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

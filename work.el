@@ -1,3 +1,8 @@
+(setq url-proxy-services
+      '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+        ("http" . "proxy.inet.bloomberg.com:81")
+        ("https" . "proxy.inet.bloomberg.com:81")))
+
 ;; enable xml mode for schemas
 (add-to-list 'auto-mode-alist '("\\.xsd\\'" . xml-mode))
 
