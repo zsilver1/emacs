@@ -357,6 +357,14 @@
   :config
   (smex-initialize))
 
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook)
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  (setq dashboard-items '((projects  . 5)
+                        (recents . 5)
+                        (agenda . 5))))
+
 (use-package shell-pop
   :bind (("C-t" . shell-pop))
   :config
