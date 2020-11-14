@@ -238,7 +238,7 @@
   (setq doom-modeline-buffer-file-name-style 'buffer-name)
   (setq doom-modeline-vcs-max-length 20)
   (setq doom-modeline-env-enable-python nil)
-  (setq doom-modeline-checker-simple-format nil))
+  (setq doom-modeline-checker-simple-format t))
 
 (use-package expand-region
   :init
@@ -313,16 +313,22 @@
   (setq lsp-enable-snippet nil)
   (setq lsp-completion-provider :capf)
   (setq lsp-modeline-diagnostics-enable nil)
-  (setq lsp-headerline-breadcrumb-enable t))
+  (setq lsp-headerline-breadcrumb-enable t)
+  (setq lsp-modeline-diagnostics-mode t))
 
 (use-package lsp-ui :commands lsp-ui-mode
   :config
   (setq lsp-ui-sideline-enable t)
   (setq lsp-ui-doc-enable nil))
 
+(use-package treemacs)
+
+(use-package lsp-treemacs
+  :bind ("C-c c l" . lsp-treemacs-errors-list))
+
 (use-package flycheck
-  :bind (("C-c C-n" . flycheck-next-error)
-         ("C-c C-p" . flycheck-previous-error))
+  :bind (("C-c c n" . flycheck-next-error)
+         ("C-c c p" . flycheck-previous-error))
   :hook ((python-mode . flycheck-mode)
          (rust-mode . flycheck-mode)
          (json-mode . flycheck-mode)))
