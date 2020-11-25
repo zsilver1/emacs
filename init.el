@@ -21,6 +21,9 @@
 (setq default-directory "~/")
 (setq command-line-default-directory "~/")
 
+;; set shell to zsh
+(setq shell-file-name "/bin/zsh")
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SET DEFAULT CONFIGURATIONS         ;;
@@ -377,6 +380,7 @@
   (setq shell-pop-shell-type (quote ("ansi-term" "*shell-pop-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
   ;; need to do this manually or not picked up by `shell-pop'
   (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+  (setq shell-pop-term-shell shell-file-name)
   (require 'term)
   (expose-global-binding-in-term (kbd "C-t")))
 
@@ -436,7 +440,7 @@
                ("<return>" . vterm-copy-mode-disable)))
   :config
   (add-hook 'vterm-mode-hook (lambda () (linum-mode 0)))
-  (setq vterm-buffer-name-string "vterm %s"))
+  (setq vterm-shell shell-file-name))
 
 (use-package helpful
   :bind (("C-h f" . helpful-callable)
@@ -446,31 +450,6 @@
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
-
-(use-package worf
-  :config
-  ;; use ivy to insert a link to a heading in the current document
-  ;; based on `worf-goto`
-  (defun zs/worf-insert-internal-link ()
-    "Use ivy to insert a link to a heading in the current `org-mode' document. Code is based on `worf-goto'."
-    (interactive)
-    (let ((cands (worf--goto-candidates)))
-      (ivy-read "Heading: " cands
-                :action 'zs/worf-insert-internal-link-action)))
-  (defun zs/worf-insert-internal-link-action (x)
-    "Insert link for `zs/worf-insert-internal-link'"
-    ;; go to heading
-    (save-excursion
-      (goto-char (cdr x))
-      ;; store link
-      (call-interactively 'org-store-link)
-      )
-    ;; return to original point and insert link
-    (org-insert-last-stored-link 1)
-    ;; org-insert-last-stored-link adds a newline so delete this
-    (delete-backward-char 1)
-    )
-  (define-key org-mode-map (kbd "C-c C-l") 'zs/worf-insert-internal-link))
 
 (load custom-file 'noerror)
 (when is-personal-computer (load "~/.emacs.d/personal.el" 'noerror))
