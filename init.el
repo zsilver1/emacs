@@ -73,6 +73,9 @@
 
 (setq initial-major-mode 'fundamental-mode)
 
+;; Avoid performance issues in files with very long lines.
+(global-so-long-mode 1)
+
 ;; Turn off starting message
 (setq inhibit-startup-message t)
 (setq inhibit-startup-echo-area-message t)
