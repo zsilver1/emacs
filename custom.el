@@ -17,7 +17,7 @@
  '(org-journal-time-format "%l:%M %p")
  '(org-journal-time-prefix "**")
  '(package-selected-packages
-   '(lua-mode json-mode dashboard expand-region pyenv-mode helpful lsp-pyright rainbow-delimiters vterm smart-jump bm simpleclip org-journal ox-twbs rustic xterm-color groovy-mode magit shell-pop doom-modeline doom-themes all-the-icons-ivy all-the-icons lsp-ivy lsp-ui blacken mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido exec-path-from-shell esup counsel))
+   '(pyvenv lua-mode json-mode dashboard expand-region pyenv-mode helpful lsp-pyright rainbow-delimiters vterm smart-jump bm simpleclip org-journal ox-twbs rustic xterm-color groovy-mode magit shell-pop doom-modeline doom-themes all-the-icons-ivy all-the-icons lsp-ivy lsp-ui blacken mood-line company-anaconda anaconda-mode dash-functional worf yasnippet flycheck-rust cargo dumb-jump rust-mode crux pipenv company-box company undo-tree smex which-key use-package ido-vertical-mode ido-completing-read+ flx-ido exec-path-from-shell esup counsel))
  '(unpackaged/org-export-html-with-useful-ids-mode t)
  '(yas-global-mode t))
 (custom-set-faces

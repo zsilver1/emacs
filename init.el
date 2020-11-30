@@ -339,8 +339,7 @@
          (rust-mode . flycheck-mode)
          (json-mode . flycheck-mode)))
 
-;; (use-package pyenv-mode
-;;   :hook (python-mode . pyenv-mode))
+(use-package pyvenv)
 
 (use-package dumb-jump
   :config
