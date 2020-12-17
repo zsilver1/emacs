@@ -35,7 +35,7 @@
 (defconst is-mac (eq system-type 'darwin))
 
 ;; set default python interpreter
-(defconst python-interpreter "python3.8")
+(defconst python-interpreter "python")
 (setq python-shell-interpreter python-interpreter)
 
 ;; Increase gc-cons-threshold to improve performance
@@ -53,7 +53,7 @@
 ;; Ask "y" or "n" instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-frame-font "Jetbrains Mono 15" nil t)
+(set-frame-font "Jetbrains Mono 16" nil t)
 ;; get rid of right fringe
 (set-face-attribute 'fringe nil :background nil)
 
@@ -188,7 +188,8 @@
             mac-option-modifier 'none
             ispell-program-name "aspell")
       (set-frame-font "Jetbrains Mono 15" nil t)
-      (menu-bar-mode t)))
+      (menu-bar-mode t)
+      (global-set-key [mouse-2] 'yank)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -320,7 +321,12 @@
   (setq lsp-completion-provider :capf)
   (setq lsp-modeline-diagnostics-enable nil)
   (setq lsp-headerline-breadcrumb-enable t)
-  (setq lsp-modeline-diagnostics-mode t))
+  (setq lsp-modeline-diagnostics-mode t)
+
+  ;; pyls specific settings
+  (setq lsp-pyls-plugins-pycodestyle-max-line-length 100)
+  (setq lsp-pyls-plugins-flake8-max-line-length 100)
+  )
 
 (use-package lsp-ui :commands lsp-ui-mode
   :config
@@ -340,6 +346,8 @@
          (json-mode . flycheck-mode)))
 
 (use-package pyvenv)
+
+(use-package blacken)
 
 (use-package dumb-jump
   :config
@@ -448,6 +456,8 @@
   :bind (("C-h f" . helpful-callable)
          ("C-h v" . helpful-variable)
          ("C-h k" . helpful-key)))
+
+(use-package multiple-cursors)
 
 
 (use-package rainbow-delimiters
