@@ -315,6 +315,10 @@
   :commands lsp
   :config
 
+  ;; make sure to "pip install future"
+  (lsp-register-custom-settings
+   '(("pyls.plugins.pyls_mypy.enabled" t t)))
+
   (setq lsp-prefer-flymake nil)
   (setq lsp-signature-render-documentation nil)
   (setq lsp-enable-snippet nil)
