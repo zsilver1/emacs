@@ -138,6 +138,7 @@
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
 (global-set-key (kbd "C-*") 'universal-argument)
+(global-set-key (kbd "S-<f13>") 'yank)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM ELISP FUNCTIONS             ;;
@@ -152,7 +153,6 @@
 (defun zs/term ()
   (interactive)
   (ansi-term (getenv "SHELL")))
-;; (global-set-key (kbd "M-t") 'zs/term)
 
 (defun zs/save-position ()
   (interactive)
@@ -388,16 +388,6 @@
                         (recents . 5)
                         (agenda . 5))))
 
-(use-package shell-pop
-  :bind (("C-t" . shell-pop))
-  :config
-  (setq shell-pop-shell-type (quote ("ansi-term" "*shell-pop-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-  ;; need to do this manually or not picked up by `shell-pop'
-  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
-  (setq shell-pop-term-shell shell-file-name)
-  (require 'term)
-  (expose-global-binding-in-term (kbd "C-t")))
-
 (use-package magit
   :bind ("C-x g" . magit-status)
   :config
@@ -447,14 +437,25 @@
   :bind (("M-t" . vterm)
          (:map vterm-mode-map
                ("C-c C-j" . vterm-copy-mode-enable)
-               ("<S-insert>" . vterm-yank-primary))
+               ("<S-insert>" . vterm-yank-primary)
+               ("<S-f13>" . vterm-yank-primary))
          (:map vterm-copy-mode-map
                ("C-c C-k" . vterm-copy-mode-disable)
                ("RET" . vterm-copy-mode-disable)
                ("<return>" . vterm-copy-mode-disable)))
   :config
   (add-hook 'vterm-mode-hook (lambda () (linum-mode 0)))
-  (setq vterm-shell shell-file-name))
+  (setq vterm-shell shell-file-name)
+  ;; used for shell pop
+  (unbind-key "C-t" vterm-mode-map))
+
+(use-package shell-pop
+  :bind (("C-t" . shell-pop))
+  :config
+  (setq shell-pop-shell-type (quote ("vterm" "*shell-pop-term*" (lambda nil (vterm shell-pop-term-shell)))))
+  ;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+  (setq shell-pop-term-shell shell-file-name))
 
 (use-package helpful
   :bind (("C-h f" . helpful-callable)
