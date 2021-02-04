@@ -437,12 +437,13 @@
   :bind (("M-t" . vterm)
          (:map vterm-mode-map
                ("C-c C-j" . vterm-copy-mode-enable)
-               ("<S-insert>" . vterm-yank-primary)
-               ("<S-f13>" . vterm-yank-primary))
+               ("<S-insert>" . vterm-yank)
+               ("<S-f13>" . vterm-yank))
          (:map vterm-copy-mode-map
                ("C-c C-k" . vterm-copy-mode-disable)
                ("RET" . vterm-copy-mode-disable)
-               ("<return>" . vterm-copy-mode-disable)))
+               ("<return>" . vterm-copy-mode-disable)
+               ("<S-f13>" . vterm-yank)))
   :config
   (add-hook 'vterm-mode-hook (lambda () (linum-mode 0)))
   (setq vterm-shell shell-file-name)
