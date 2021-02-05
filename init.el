@@ -126,6 +126,8 @@
 ;; fix mouse behavior
 (setq mouse-yank-at-point t)
 
+(setq mouse-drag-copy-region t)
+
 ;; Make org mode source code syntax highlighted
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
