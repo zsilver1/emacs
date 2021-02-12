@@ -18,3 +18,17 @@
       (`yearly "#+TITLE: Yearly Journal\n#+STARTUP: folded"))))
 
 (setq org-journal-file-header 'org-journal-file-header-func))
+
+
+(require 'org-table)
+
+(defun cleanup-org-tables ()
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward "-+-" nil t) (replace-match "-|-"))
+    ))
+
+(add-hook 'yaml-mode-hook 'orgtbl-mode)
+(add-hook 'yaml-mode-hook
+          (lambda()
+            (add-hook 'after-save-hook 'cleanup-org-tables  nil 'local)))

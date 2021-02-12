@@ -122,6 +122,10 @@
 
 ;; Electric Pair mode
 (electric-pair-mode 1)
+;; Disable pairs when entering minibuffer
+(add-hook 'minibuffer-setup-hook (lambda () (electric-pair-mode 0)))
+;; Renable pairs when existing minibuffer
+(add-hook 'minibuffer-exit-hook (lambda () (electric-pair-mode 1)))
 
 ;; fix mouse behavior
 (setq mouse-yank-at-point t)
