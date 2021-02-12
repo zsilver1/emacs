@@ -35,7 +35,7 @@
 (defconst is-mac (eq system-type 'darwin))
 
 ;; set default python interpreter
-(defconst python-interpreter "python3.8")
+(defconst python-interpreter "python")
 (setq python-shell-interpreter python-interpreter)
 
 ;; Increase gc-cons-threshold to improve performance
@@ -53,7 +53,7 @@
 ;; Ask "y" or "n" instead of "yes" or "no"
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(set-frame-font "Jetbrains Mono 15" nil t)
+(set-frame-font "Jetbrains Mono 16" nil t)
 ;; get rid of right fringe
 (set-face-attribute 'fringe nil :background nil)
 
@@ -130,6 +130,8 @@
 ;; fix mouse behavior
 (setq mouse-yank-at-point t)
 
+(setq mouse-drag-copy-region t)
+
 ;; Make org mode source code syntax highlighted
 (setq org-src-fontify-natively t)
 (setq org-startup-indented t)
@@ -142,6 +144,7 @@
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
 (global-set-key (kbd "C-x C-k") 'kill-buffer-and-window)
 (global-set-key (kbd "C-*") 'universal-argument)
+(global-set-key (kbd "S-<f13>") 'yank)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM ELISP FUNCTIONS             ;;
@@ -156,7 +159,6 @@
 (defun zs/term ()
   (interactive)
   (ansi-term (getenv "SHELL")))
-;; (global-set-key (kbd "M-t") 'zs/term)
 
 (defun zs/save-position ()
   (interactive)
@@ -192,7 +194,8 @@
             mac-option-modifier 'none
             ispell-program-name "aspell")
       (set-frame-font "Jetbrains Mono 15" nil t)
-      (menu-bar-mode t)))
+      (menu-bar-mode t)
+      (global-set-key [mouse-2] 'yank)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -318,13 +321,22 @@
   :commands lsp
   :config
 
+  ;; make sure to "pip install future"
+  (lsp-register-custom-settings
+   '(("pyls.plugins.pyls_mypy.enabled" t t)))
+
   (setq lsp-prefer-flymake nil)
   (setq lsp-signature-render-documentation nil)
   (setq lsp-enable-snippet nil)
   (setq lsp-completion-provider :capf)
   (setq lsp-modeline-diagnostics-enable nil)
   (setq lsp-headerline-breadcrumb-enable t)
-  (setq lsp-modeline-diagnostics-mode t))
+  (setq lsp-modeline-diagnostics-mode t)
+
+  ;; pyls specific settings
+  (setq lsp-pyls-plugins-pycodestyle-max-line-length 100)
+  (setq lsp-pyls-plugins-flake8-max-line-length 100)
+  )
 
 (use-package lsp-ui :commands lsp-ui-mode
   :config
@@ -344,6 +356,8 @@
          (json-mode . flycheck-mode)))
 
 (use-package pyvenv)
+
+(use-package blacken)
 
 (use-package dumb-jump
   :config
@@ -379,16 +393,6 @@
   (setq dashboard-items '((projects  . 5)
                         (recents . 5)
                         (agenda . 5))))
-
-(use-package shell-pop
-  :bind (("C-t" . shell-pop))
-  :config
-  (setq shell-pop-shell-type (quote ("ansi-term" "*shell-pop-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-  ;; need to do this manually or not picked up by `shell-pop'
-  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
-  (setq shell-pop-term-shell shell-file-name)
-  (require 'term)
-  (expose-global-binding-in-term (kbd "C-t")))
 
 (use-package magit
   :bind ("C-x g" . magit-status)
@@ -439,19 +443,33 @@
   :bind (("M-t" . vterm)
          (:map vterm-mode-map
                ("C-c C-j" . vterm-copy-mode-enable)
-               ("<S-insert>" . vterm-yank-primary))
+               ("<S-insert>" . vterm-yank)
+               ("<S-f13>" . vterm-yank))
          (:map vterm-copy-mode-map
                ("C-c C-k" . vterm-copy-mode-disable)
                ("RET" . vterm-copy-mode-disable)
-               ("<return>" . vterm-copy-mode-disable)))
+               ("<return>" . vterm-copy-mode-disable)
+               ("<S-f13>" . vterm-yank)))
   :config
   (add-hook 'vterm-mode-hook (lambda () (linum-mode 0)))
-  (setq vterm-shell shell-file-name))
+  (setq vterm-shell shell-file-name)
+  ;; used for shell pop
+  (unbind-key "C-t" vterm-mode-map))
+
+(use-package shell-pop
+  :bind (("C-t" . shell-pop))
+  :config
+  (setq shell-pop-shell-type (quote ("vterm" "*shell-pop-term*" (lambda nil (vterm shell-pop-term-shell)))))
+  ;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+  (setq shell-pop-term-shell shell-file-name))
 
 (use-package helpful
   :bind (("C-h f" . helpful-callable)
          ("C-h v" . helpful-variable)
          ("C-h k" . helpful-key)))
+
+(use-package multiple-cursors)
 
 
 (use-package rainbow-delimiters
