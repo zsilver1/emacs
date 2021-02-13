@@ -63,6 +63,8 @@
 
 ;; Highlight corresponding parentheses when cursor is on one
 (show-paren-mode t)
+;; fix paren highlighting overlay when region is active
+(setq show-paren-priority -50)
 
 ;; prevents line wrapping
 (set-default 'truncate-lines t)
