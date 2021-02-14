@@ -298,6 +298,10 @@
         '((t)
           (counsel-find-file . ivy--sort-files-by-date))))
 
+(use-package ctrlf
+  :config
+  (ctrlf-mode 1))
+
 (use-package company
   :hook (prog-mode . company-mode)
   :bind (:map company-active-map
