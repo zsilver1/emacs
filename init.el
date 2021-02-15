@@ -317,6 +317,9 @@
   (setq company-idle-delay 0.1)
   (setq company-dabbrev-downcase nil))
 
+
+(use-package rustic)
+
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
