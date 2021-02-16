@@ -4,6 +4,5 @@
 # Except these files
 !.gitignore
 !init.el
-!custom.el
 !personal.el
 !work.el

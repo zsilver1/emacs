@@ -421,9 +421,9 @@
       (setq projectile-project-search-path '("~/Documents/Programming/"))
     (setq projectile-project-search-path '("~/"))))
 
-(use-package smart-jump
-  :config
-  (smart-jump-setup-default-registers))
+;; (use-package smart-jump
+;;   :config
+;;   (smart-jump-setup-default-registers))
 
 (use-package markdown-mode
   :config
