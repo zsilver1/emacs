@@ -300,8 +300,14 @@
 
 (use-package ctrlf
   :config
+  (setq ctrlf-mode-bindings '(("C-s" . ctrlf-forward-fuzzy)
+                              ("C-r" . ctrlf-backward-fuzzy)
+                              ("C-M-s" . ctrlf-forward-regexp)
+                              ("C-M-r" . ctrlf-backward-regexp)
+                              ("M-s _" . ctrlf-forward-symbol)
+                              ("M-s ." . ctrlf-forward-symbol-at-point)))
   (ctrlf-mode 1)
-  (set-face-attribute 'ctrlf-highlight-active nil :weight 'bold :underline t))
+  (set-face-attribute 'ctrlf-highlight-active nil :underline t))
 
 (use-package company
   :hook (prog-mode . company-mode)
