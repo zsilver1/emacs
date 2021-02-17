@@ -300,7 +300,8 @@
 
 (use-package ctrlf
   :config
-  (ctrlf-mode 1))
+  (ctrlf-mode 1)
+  (set-face-attribute 'ctrlf-highlight-active nil :weight 'bold :underline t))
 
 (use-package company
   :hook (prog-mode . company-mode)
@@ -463,7 +464,8 @@
   (add-hook 'vterm-mode-hook (lambda () (linum-mode 0)))
   (setq vterm-shell shell-file-name)
   ;; used for shell pop
-  (unbind-key "C-t" vterm-mode-map))
+  (unbind-key "C-t" vterm-mode-map)
+  (setq vterm-buffer-name-string "vterm %s"))
 
 (use-package shell-pop
   :bind (("C-t" . shell-pop))
