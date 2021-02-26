@@ -250,7 +250,7 @@
   :if (display-graphic-p)
   :init (doom-modeline-mode 1)
   :config
-  (setq doom-modeline-buffer-file-name-style 'buffer-name)
+  (setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
   (setq doom-modeline-vcs-max-length 20)
   (setq doom-modeline-env-enable-python nil)
   (setq doom-modeline-checker-simple-format t))
@@ -298,16 +298,16 @@
         '((t)
           (counsel-find-file . ivy--sort-files-by-date))))
 
-(use-package ctrlf
-  :config
-  (setq ctrlf-mode-bindings '(("C-s" . ctrlf-forward-fuzzy)
-                              ("C-r" . ctrlf-backward-fuzzy)
-                              ("C-M-s" . ctrlf-forward-regexp)
-                              ("C-M-r" . ctrlf-backward-regexp)
-                              ("M-s _" . ctrlf-forward-symbol)
-                              ("M-s ." . ctrlf-forward-symbol-at-point)))
-  (ctrlf-mode 1)
-  (set-face-attribute 'ctrlf-highlight-active nil :underline t))
+;; (use-package ctrlf
+;;   :config
+;;   (setq ctrlf-mode-bindings '(("C-s" . ctrlf-forward-fuzzy)
+;;                               ("C-r" . ctrlf-backward-fuzzy)
+;;                               ("C-M-s" . ctrlf-forward-regexp)
+;;                               ("C-M-r" . ctrlf-backward-regexp)
+;;                               ("M-s _" . ctrlf-forward-symbol)
+;;                               ("M-s ." . ctrlf-forward-symbol-at-point)))
+;;   (ctrlf-mode 1)
+;;   (set-face-attribute 'ctrlf-highlight-active nil :underline t))
 
 (use-package company
   :hook (prog-mode . company-mode)
