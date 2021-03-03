@@ -273,6 +273,8 @@
 (unless (display-graphic-p)
     (load-theme 'wombat t))
 
+(use-package wgrep)
+
 (use-package counsel
   :demand
   :bind (("C-;" . counsel-imenu)
