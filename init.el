@@ -187,6 +187,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MAC SPECIFIC SETTINGS   ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (when is-mac
     (progn
       (setq mac-option-key-is-meta nil
