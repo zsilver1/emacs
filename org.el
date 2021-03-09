@@ -27,8 +27,8 @@
                  :tag "today"
                  :date today
                  :scheduled today)
-          (:name "High Priority"
-                 :priority "A")
+          (:name "Prioritized"
+                 :priority>= "C")
           (:name "Upcoming"
                  :auto-planning)
           (:auto-category))))
