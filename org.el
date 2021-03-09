@@ -9,11 +9,6 @@
 (setq org-todo-keywords
       '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d!)" "CANCELLED(c@)")))
 
-
-(setq org-capture-templates
-      '(("t" "Todo" entry (file+headline org-agenda-filename "Tasks")
-         "* TODO %?\n  %i")))
-
 ;; HOOKS
 (add-hook 'org-mode-hook 'auto-fill-mode)
 
