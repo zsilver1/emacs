@@ -9,6 +9,10 @@
 (setq org-todo-keywords
       '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d!)" "CANCELLED(c@)")))
 
+(setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+(setq org-refile-use-outline-path 'file)
+(setq org-outline-path-complete-in-steps nil)
+
 ;; HOOKS
 (add-hook 'org-mode-hook 'auto-fill-mode)
 
