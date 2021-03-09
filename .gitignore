@@ -5,3 +5,4 @@
 !.gitignore
 !init.el
 !personal.el
+!org.el

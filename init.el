@@ -134,12 +134,6 @@
 
 (setq mouse-drag-copy-region t)
 
-;; Make org mode source code syntax highlighted
-(setq org-src-fontify-natively t)
-(setq org-startup-indented t)
-(setq org-hide-leading-stars t)
-(add-hook 'org-mode-hook 'auto-fill-mode)
-
 (global-set-key (kbd "C-u") 'undo)
 (global-unset-key (kbd "C-x u"))
 (global-set-key (kbd "M-i") 'dabbrev-expand)
@@ -493,9 +487,12 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
+(defvar org-agenda-filename)
+
 (load custom-file 'noerror)
 (when is-personal-computer (load "~/.emacs.d/personal.el" 'noerror))
 (unless is-personal-computer (load "~/.emacs.d/work.el" 'noerror))
+(load "~/.emacs.d/org.el" 'noerror)
 
 ;; start server
 (server-start)
