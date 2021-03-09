@@ -22,7 +22,7 @@
 (add-hook 'org-mode-hook 'auto-fill-mode)
 
 ;; KEYBINDINGS
-(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c a") (lambda () (interactive) (org-agenda nil "t")))
 
 (use-package org-super-agenda
   :config
