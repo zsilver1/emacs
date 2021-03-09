@@ -401,9 +401,10 @@
   :config
   (dashboard-setup-startup-hook)
   (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  (setq dashboard-match-agenda-entry ":today:")
   (setq dashboard-items '((projects  . 5)
-                        (recents . 5)
-                        (agenda . 5))))
+                          (recents . 5)
+                          (agenda . 5))))
 
 (use-package magit
   :bind ("C-x g" . magit-status)
