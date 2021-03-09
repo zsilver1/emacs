@@ -489,8 +489,6 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(defvar org-agenda-filename)
-
 (load custom-file 'noerror)
 (when is-personal-computer (load "~/.emacs.d/personal.el" 'noerror))
 (unless is-personal-computer (load "~/.emacs.d/work.el" 'noerror))

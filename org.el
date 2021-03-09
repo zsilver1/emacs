@@ -14,10 +14,6 @@
       '(("t" "Todo" entry (file+headline org-agenda-filename "Tasks")
          "* TODO %?\n  %i")))
 
-
-(setq org-agenda-files `(,org-agenda-filename))
-(setq org-directory (file-name-directory org-agenda-filename))
-
 ;; HOOKS
 (add-hook 'org-mode-hook 'auto-fill-mode)
 
