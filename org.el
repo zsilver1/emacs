@@ -25,7 +25,9 @@
   (org-super-agenda-mode)
   (setq org-super-agenda-groups
         '((:name "Today"
-                 :tag "today")
+                 :tag "today"
+                 :date today
+                 :scheduled today)
           (:name "High Priority"
                  :priority "A")
           (:name "Upcoming"
