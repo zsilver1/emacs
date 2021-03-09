@@ -27,4 +27,4 @@
                  :priority "A")
           (:name "Upcoming"
                  :auto-planning)
-          (:auto-parent))))
+          (:auto-category))))
