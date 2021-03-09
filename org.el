@@ -11,7 +11,7 @@
 
 
 (setq org-capture-templates
-      '(("t" "Todo" entry (file org-agenda-filename)
+      '(("t" "Todo" entry (file+headline org-agenda-filename "Tasks")
          "* TODO %?\n  %i")))
 
 
