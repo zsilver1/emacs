@@ -5,9 +5,8 @@
 
 (setq org-tags-column -70)
 (setq org-fast-tag-selection-single-key 'expert)
-(setq org-tag-alist '(("today" . ?t)))
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d!)" "CANCELLED(c@)")))
+      '((sequence "NEXT(n)" "TODO(t)" "WAITING(w)" "|" "DONE(d!)" "CANCELLED(c@)")))
 
 (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
 (setq org-refile-use-outline-path 'file)
@@ -23,12 +22,17 @@
   :config
   (org-super-agenda-mode)
   (setq org-super-agenda-groups
-        '((:name "Today"
-                 :tag "today"
+        '((:name "Next"
+                 :todo "NEXT"
                  :date today
                  :scheduled today)
           (:name "Prioritized"
                  :priority>= "C")
           (:name "Upcoming"
                  :auto-planning)
-          (:auto-category))))
+          (:name "Waiting"
+                 :todo "WAITING")
+          (:name "Tasks"
+                 :category "tasks")
+          (:name "Projects"
+                 :auto-outline-path))))
