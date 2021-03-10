@@ -23,11 +23,12 @@
   (org-super-agenda-mode)
   (setq org-super-agenda-groups
         '((:name "Next"
+                 :order 1
                  :todo "NEXT"
                  :date today
                  :scheduled today)
           (:name "Prioritized"
-                 :priority>= "C")
+                 :and (:priority "A" :todo "TODO"))
           (:name "Upcoming"
                  :auto-planning)
           (:name "Waiting"
