@@ -23,7 +23,6 @@
   (org-super-agenda-mode)
   (setq org-super-agenda-groups
         '((:name "Next"
-                 :order 1
                  :todo "NEXT"
                  :date today
                  :scheduled today)
