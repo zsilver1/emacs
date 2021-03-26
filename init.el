@@ -372,7 +372,8 @@
 
 (use-package dumb-jump
   :config
-  (setq dumb-jump-selector 'ivy))
+  (setq dumb-jump-selector 'ivy)
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
 (use-package crux
   :bind
