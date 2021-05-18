@@ -454,8 +454,7 @@
   (defun vterm-copy-mode-disable ()
     (interactive)
     (vterm-copy-mode 0))
-  :bind (("M-t" . vterm)
-         (:map vterm-mode-map
+  :bind ((:map vterm-mode-map
                ("C-c C-j" . vterm-copy-mode-enable)
                ("<S-insert>" . vterm-yank)
                ("<S-f13>" . vterm-yank))
@@ -465,6 +464,9 @@
                ("<return>" . vterm-copy-mode-disable)
                ("<S-f13>" . vterm-yank)))
   :config
+  (global-set-key (kbd "M-t") (lambda () (interactive)
+                                (setq current-prefix-arg '(t))
+                                (call-interactively 'vterm)))
   (add-hook 'vterm-mode-hook (lambda () (linum-mode 0)))
   (setq vterm-shell shell-file-name)
   ;; used for shell pop
@@ -494,6 +496,9 @@
   :config
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
   (setq highlight-indent-guides-method 'bitmap))
+
+(use-package csv-mode
+  :hook (csv-mode . csv-align-mode))
 
 (load custom-file 'noerror)
 (when is-personal-computer (load "~/.emacs.d/personal.el" 'noerror))
