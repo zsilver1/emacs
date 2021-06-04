@@ -332,27 +332,19 @@
   :commands lsp
   :config
 
-  ;; make sure to "pip install future"
-  (lsp-register-custom-settings
-   '(("pyls.plugins.pyls_mypy.enabled" t t)))
-
   (setq lsp-prefer-flymake nil)
   (setq lsp-signature-render-documentation nil)
   (setq lsp-enable-snippet nil)
   (setq lsp-completion-provider :capf)
   (setq lsp-modeline-diagnostics-enable nil)
   (setq lsp-headerline-breadcrumb-enable t)
-  (setq lsp-modeline-diagnostics-mode t)
-
-  ;; pyls specific settings
-  (setq lsp-pyls-plugins-pycodestyle-max-line-length 100)
-  (setq lsp-pyls-plugins-flake8-max-line-length 100)
-  )
+  (setq lsp-modeline-diagnostics-mode t))
 
 (use-package lsp-ui :commands lsp-ui-mode
   :config
   (setq lsp-ui-sideline-enable t)
-  (setq lsp-ui-doc-enable nil))
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-diagnostic-package :none))
 
 (use-package treemacs)
 
@@ -364,7 +356,10 @@
          ("C-c c p" . flycheck-previous-error))
   :hook ((python-mode . flycheck-mode)
          (rust-mode . flycheck-mode)
-         (json-mode . flycheck-mode)))
+         (json-mode . flycheck-mode))
+  :config
+  (setq flycheck-flake8-maximum-line-length 150))
+
 
 (use-package pyvenv)
 
@@ -457,6 +452,7 @@
   :bind ((:map vterm-mode-map
                ("C-c C-j" . vterm-copy-mode-enable)
                ("<S-insert>" . vterm-yank)
+               ("C-l" . vterm-clear)
                ("<S-f13>" . vterm-yank))
          (:map vterm-copy-mode-map
                ("C-c C-k" . vterm-copy-mode-disable)
@@ -464,14 +460,15 @@
                ("<return>" . vterm-copy-mode-disable)
                ("<S-f13>" . vterm-yank)))
   :config
-  (global-set-key (kbd "M-t") (lambda () (interactive)
-                                (setq current-prefix-arg '(t))
-                                (call-interactively 'vterm)))
   (add-hook 'vterm-mode-hook (lambda () (linum-mode 0)))
   (setq vterm-shell shell-file-name)
   ;; used for shell pop
   (unbind-key "C-t" vterm-mode-map)
   (setq vterm-buffer-name-string "vterm %s"))
+
+(global-set-key (kbd "M-t") (lambda () (interactive)
+                                (setq current-prefix-arg '(t))
+                                (call-interactively 'vterm)))
 
 (use-package shell-pop
   :bind (("C-t" . shell-pop))
